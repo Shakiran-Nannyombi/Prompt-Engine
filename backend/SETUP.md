@@ -41,5 +41,5 @@ uv sync
 ### Running file
 
 ```sh
-uv run main.py
+uv run app/api/main.py
 ```
