@@ -4,10 +4,8 @@ from pydantic import BaseModel, Field
 import language_tool_python
 from dotenv import load_dotenv
 
-import os, getpass
-
-# Load environment variables first
-load_dotenv(dotenv_path="../../.env")
+# Load environment variables first (project root if present)
+load_dotenv()
 
 tavily_search = TavilySearch(max_results=3)
 
