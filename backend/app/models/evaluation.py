@@ -1,7 +1,34 @@
 from pydantic import BaseModel, Field
+from pydantic import ConfigDict
 from typing import Optional
 
 class EvaluationResult(BaseModel):
+    # Pydantic v2 config (replaces deprecated class Config)
+    model_config = ConfigDict(
+        extra="allow",
+        json_schema_extra={
+            "examples": [
+                {
+                    "is_correct": True,
+                    "feedback": "Great task! This is clear and actionable. To make it even better, you could specify the target audience or specific features you want.",
+                    "updated_prompt": None,
+                    "suggestions": [
+                        "Consider specifying the target grade level",
+                        "Think about specific subject areas to focus on",
+                    ],
+                },
+                {
+                    "is_correct": False,
+                    "feedback": "I need a bit more information to help you. Could you tell me what specific task you'd like to accomplish? For example: 'Write a blog post', 'Create a chatbot', or 'Generate code for an app'.",
+                    "updated_prompt": None,
+                    "suggestions": [
+                        "Provide a specific goal or outcome",
+                        "Describe what you want to create or accomplish",
+                    ],
+                },
+            ]
+        },
+    )
     is_correct: bool = Field(
         description="""
         True if the user input is acceptable as a valid task, context, reference, or final prompt.
@@ -33,23 +60,5 @@ class EvaluationResult(BaseModel):
         description="List of specific suggestions for improvement. Optional field."
     )
     
-    class Config:
-        extra = "allow"
-        # Providing examples for better LLM understanding
-        schema_extra = {
-            "examples": [
-                {
-                    "is_correct": True,
-                    "feedback": "Great task! This is clear and actionable. To make it even better, you could specify the target audience or specific features you want.",
-                    "updated_prompt": None,
-                    "suggestions": ["Consider specifying the target grade level", "Think about specific subject areas to focus on"]
-                },
-                {
-                    "is_correct": False,
-                    "feedback": "I need a bit more information to help you. Could you tell me what specific task you'd like to accomplish? For example: 'Write a blog post', 'Create a chatbot', or 'Generate code for an app'.",
-                    "updated_prompt": None,
-                    "suggestions": ["Provide a specific goal or outcome", "Describe what you want to create or accomplish"]
-                }
-            ]
-        }
+    # (No class Config; using model_config above)
         

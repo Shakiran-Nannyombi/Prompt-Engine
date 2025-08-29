@@ -135,14 +135,7 @@ def main():
         st.progress(progress_info["progress_percentage"] / 100)
         st.markdown(f"Progress: {progress_info['steps_completed']}/{progress_info['total_steps']} steps completed")
         
-        # Step checklist
-        st.markdown("### Step Checklist")
-        st.markdown(f"if progress_info ['task'] else  **Task Definition**")
-        st.markdown(f"progress_info ['context'] **Context Gathering**") 
-        st.markdown(f"progress_info ['references'] **Reference Collection**")
-        st.markdown(f"progress_info ['final_prompt'] **Final Prompt Creation**")
-        
-        # Expandable details
+        # Details of each step
         with st.expander("View Captured Details", expanded=False):
             task_preview = progress_info['task'][:50] + '...' if progress_info['task'] and len(progress_info['task']) > 50 else progress_info['task'] or 'Not provided yet'
             context_preview = progress_info['context'][:50] + '...' if progress_info['context'] and len(progress_info['context']) > 50 else progress_info['context'] or 'Not provided yet'
