@@ -12,7 +12,7 @@ from langchain_groq import ChatGroq
 from streamlit import feedback
 from models.evaluation import EvaluationResult
 from langgraph.prebuilt import ToolNode
-from agents import tools
+from agents.tools import coach_tools
 
 sys.path.append(os.path.abspath(".."))
 
@@ -42,9 +42,9 @@ llm = ChatGroq(
     temperature=0.5
 )
 
-tool_node = ToolNode(tools.tool_list)
+tool_node = ToolNode(coach_tools.tool_list)
 evaluation_llm = llm.with_structured_output(EvaluationResult)
-llm_with_tools = llm.bind_tools(tools=tools.tool_list, parallel_tool_calls=False)
+llm_with_tools = llm.bind_tools(tools=coach_tools.tool_list, parallel_tool_calls=False)
 
 welcome_message = """
 **Welcome!** I'm here to help you master prompt engineering by building an effective 
@@ -290,7 +290,7 @@ def process_reference_input(state: CoachingState):
         response = llm.invoke(suggestion_prompt)
         search_query = f"reference ideas for: {task} ({context[:60]}) study planner"
         try:
-            web_results = tools.tavily_search_tool.run(search_query)
+            web_results = coach_tools.tavily_search_tool.run(search_query)
         except Exception:
             web_results = ""
 
@@ -481,7 +481,7 @@ def decide_next_step(state: CoachingState) -> str:
             return "process_context_input"
         return "process_task_input"
 
-# Router node that doesn't modify state, just routes
+# Router that just routes
 def await_user_input_node(state: CoachingState):
     return state
 
@@ -499,7 +499,7 @@ builder.add_node("agent_node", agent_node)
 builder.add_node("tool_node", tool_node)
 builder.add_node("display_final_result", display_final_result)
 
-# Start always goes to start_coaching
+# Starting always goes to start_coaching
 builder.add_edge(START, "start_coaching")
 
 # From start_coaching, go to router to wait for user input
@@ -569,7 +569,8 @@ builder.add_conditional_edges(
 builder.add_edge("tool_node", "display_final_result")
 builder.add_edge("display_final_result", END)
 
-# compile the graph with memory using a persistent connection
+# compiling the graph with memory using a persistent connection
+
 # Temporary connection for setup
 setup_conn = psycopg.connect(DB_URI)
 setup_conn.autocommit = True
