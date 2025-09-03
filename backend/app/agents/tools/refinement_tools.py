@@ -1,9 +1,12 @@
+import os
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 from langchain_groq import ChatGroq
-
-from models.refine_prompt import RefinementAnalysis
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 
 # Load environment variables
 load_dotenv()
@@ -276,3 +279,84 @@ formatted clearly using the IDEA structure.
     return refined_prompt.content
 
 creative_tool_list = [idea_refine]
+
+# RAG tools for document processing and search
+@tool("document_search")
+def search_documents(query: str) -> str:
+    """
+    Search uploaded documents for relevant context to help with prompt refinement.
+    Use this when users need context from their uploaded files to improve their prompts.
+    """
+    try:
+        # Initialize embeddings and vector store
+        embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+        
+        # Check if vector store exists
+        persist_directory = "./chroma_db"
+        if not os.path.exists(persist_directory):
+            return "No documents have been uploaded yet. Please upload some files first."
+
+        # Loading existing vector store
+        vector_store = Chroma(
+            collection_name="uploads_collection",
+            embedding_function=embeddings,
+            persist_directory=persist_directory
+        )
+        
+        # Searching for relevant documents
+        results = vector_store.similarity_search(query, k=3)
+        
+        if not results:
+            return "No relevant documents found for your query."
+        
+        # Format results
+        context = "Relevant document context:\n\n"
+        for i, doc in enumerate(results, 1):
+            context += f"Document {i}:\n{doc.page_content}\n\n"
+        
+        return context
+        
+    except Exception as e:
+        return f"Error searching documents: {str(e)}"
+
+@tool("file_processor")
+def process_uploaded_file(file_content: str) -> str:
+    """
+    Extracts text, generates embeddings, and stores in vector database.
+    """
+    try:
+        # Creating documents from file content
+        documents = [Document(page_content=file_content, metadata={"source": "user_upload"})]
+        
+        # Split documents into chunks
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000, 
+            chunk_overlap=100
+        )
+        split_docs = text_splitter.split_documents(documents)
+        
+        # Initializing embeddings
+        embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-mpnet-base-v2"
+        )
+        
+        # Create or load vector store
+        persist_directory = "./chroma_db"
+        vector_store = Chroma(
+            collection_name="uploads_collection",
+            embedding_function=embeddings,
+            persist_directory=persist_directory
+        )
+        
+        # Add documents to vector store
+        vector_store.add_documents(split_docs)
+        vector_store.persist()
+        
+        return f"Successfully processed and embedded file. Created {len(split_docs)} chunks and stored in vector database."
+        
+    except Exception as e:
+        return f"Error processing file: {str(e)}"
+
+# Add RAG tools to the tool lists
+rag_tool_list = [search_documents, process_uploaded_file]
+    
