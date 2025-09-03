@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from unittest.mock import MagicMock, patch
 from langchain_core.messages import HumanMessage, AIMessage
 
-# Load environment variables from .env file
+# Loading environment variables from .env file
 load_dotenv(dotenv_path="../.env")
 
 from agents.coach_agent import process_task_input, process_context_input, process_reference_input, extract_message_content
