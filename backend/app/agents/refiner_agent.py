@@ -48,6 +48,7 @@ class RefinerState(TypedDict):
     is_greeting: bool
     is_help_request: bool
     is_follow_up: bool
+    continue_to_refinement: bool
 
 # Choosing which category users prompt falls 
 def classify_category(state: RefinerState) -> dict:
@@ -84,7 +85,8 @@ def classify_category(state: RefinerState) -> dict:
             "document_context": "",
             "is_greeting": True,
             "is_help_request": False,
-            "is_follow_up": False
+            "is_follow_up": False,
+            "continue_to_refinement": False
         }
     
     # Checking if user is asking about frameworks or seeking help
@@ -108,7 +110,8 @@ def classify_category(state: RefinerState) -> dict:
             "document_context": "",
             "is_greeting": False,
             "is_help_request": True,
-            "is_follow_up": False
+            "is_follow_up": False,
+            "continue_to_refinement": False
         }
     
     # Checking if this is a follow-up question about the refined prompt
@@ -128,9 +131,12 @@ def classify_category(state: RefinerState) -> dict:
             "original_prompt": prompt_to_analyze,
             "prompt_category": "follow_up",
             "framework_used": "none",
-            "has_uploaded_documents": os.path.exists("./chroma_db"),
+            "has_uploaded_documents": False,
             "document_context": "",
-            "is_follow_up": True
+            "is_greeting": False,
+            "is_help_request": False,
+            "is_follow_up": True,
+            "continue_to_refinement": False
         }
     
     # Using LLM to classify the prompt for actual refinement
@@ -164,7 +170,8 @@ def classify_category(state: RefinerState) -> dict:
         "document_context": "",
         "is_greeting": False,
         "is_help_request": False,
-        "is_follow_up": False
+        "is_follow_up": False,
+        "continue_to_refinement": True
     }
 
 # Selecting which framework under category to use
@@ -255,22 +262,27 @@ def handle_conversation(state: RefinerState) -> dict:
     
     if category == "greeting":
         response = AIMessage(content=f"""
-👋 Hello! I'm your AI Prompt Refiner Agent. I'm here to help you create better, more effective prompts using advanced frameworks.
+👋 Hello! I'm your AI Prompt Refiner Agent. 
+
+I'm here to help you create better, more effective prompts using advanced frameworks to be able to 
+effectively use your tokens on any AI-model user prompting on.
 
 **What I can do:**
-• Analyze your prompts and categorize them (clarity, precision, or creative)
-• Refine prompts using specialized frameworks like C.O.R.E., R.A.C.E., and C.A.R.
-• Provide detailed analysis and recommendations
-• Use document context when available (RAG capabilities)
+
+- Analyze your prompts and categorize them (clarity, precision, or creative)
+- Refine prompts using specialized frameworks like C.O.R.E., R.A.C.E., and C.A.R.
+- Provide detailed analysis and recommendations
+- Use document context when available (RAG capabilities)
 
 **How to get started:**
+
 Simply share a prompt you'd like me to refine, and I'll analyze it and improve it using the most appropriate framework!
 
 **Example prompts you can try:**
-• "Write a meeting report"
-• "Create a marketing campaign"
-• "Design a lesson plan"
-• "Generate code for a calculator"
+- "Write a meeting report"
+- "Create a marketing campaign"
+- "Design a lesson plan"
+- "Generate code for a calculator"
 
 What would you like me to help you refine today? 
         """)

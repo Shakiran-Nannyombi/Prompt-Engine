@@ -108,11 +108,10 @@ def get_progress_info():
 def main():
     st.set_page_config(
         page_title="Prompt Engineering Coach",
-        page_icon="🤖",
         layout="wide"
     )
-    
-    st.title("🤖 Prompt Engineering Coach")
+
+    st.title("Prompt Engineering Coach")
     st.markdown("*Master the art of prompt engineering with guided assistance!*")
     
     # Initialize session state
