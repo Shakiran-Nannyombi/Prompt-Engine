@@ -20,7 +20,7 @@ if not DB_URI:
 
 # Enabling LangSmith for refiner agent (only if tracing is enabled)
 os.environ["LANGSMITH_API_KEY"] = os.environ.get("REFINER_LANGSMITH_API_KEY", "")
-os.environ["LANGSMITH_PROJECT"] = os.environ.get("LANGSMITH_PROJECT", "refiner_agent")
+os.environ["LANGSMITH_PROJECT"] = os.environ.get("REFINER_LANGSMITH_PROJECT", "refiner_agent")
 
 llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.3)
 
@@ -74,59 +74,61 @@ def handle_conversation(state: RefinerState) -> dict:
     category = state["prompt_category"]
     
     if category == "greeting":
-        response_content = """👋 **Hello! Welcome to the Prompt Refiner Agent!**
+        response_content = """👋 **Hey there! Welcome to your personal Prompt Transformation Studio!**
 
-I'm here to help you transform basic prompts into powerful, detailed instructions that get you better results from AI models.
+I'm absolutely thrilled you're here! Think of me as your creative partner who takes "meh" prompts and turns them into absolute powerhouses that get incredible results from AI models. ✨
 
-**How to use me:**
-1. Simply paste or type any prompt you want to improve
-2. I'll automatically analyze and categorize it
-3. You'll get an enhanced version with clear improvements explained
+**Here's how we'll work our magic together:**
+🎯 **Just drop me any prompt** - literally anything you want to improve!
+🔍 **I'll work my detective skills** to figure out exactly what you're after
+🚀 **You'll get back a supercharged version** with all the improvements clearly explained
 
-**Examples of prompts I can refine:**
-• "Write a blog post" → Detailed content strategy with structure
-• "Create a marketing plan" → Comprehensive plan with specific deliverables
-• "Help me code" → Targeted coding assistance with context and requirements
+**Check out these amazing transformations:**
+• "Write a blog post" → **Boom!** Detailed content strategy with engaging structure and target audience focus
+• "Create a marketing plan" → **Pow!** Comprehensive strategy with specific deliverables, timelines, and measurable goals  
+• "Help me code" → **Zap!** Targeted coding assistance with context, requirements, and step-by-step guidance
 
-**Ready to get started?** Just share any prompt you'd like me to improve!"""
+**Ready to see some prompt magic happen?** Just paste any prompt you'd like me to transform - I can't wait to show you what we can create together! 🎨"""
 
     elif category == "help_request":
-        response_content = """**How the Prompt Refiner Works**
+        response_content = """**Ooh, you want to see behind the curtain! I love that! 🎭**
 
-I use proven prompt engineering frameworks to enhance your prompts:
+I'm like a Swiss Army knife of prompt engineering - I've got all these amazing frameworks in my toolkit, and I pick the perfect one for your specific needs:
 
-**For Clarity & Structure:**
-• **C.O.R.E.** - Context, Objective, Role, Example
-• **R.A.C.E.** - Role, Action, Context, Expectation
-• **C.A.R.** - Context, Action, Result
+**🌟 For Making Things Crystal Clear:**
+• **C.O.R.E.** (Context, Objective, Role, Example) - Perfect for when you need structure!
+• **R.A.C.E.** (Role, Action, Context, Expectation) - Great for action-oriented prompts
+• **C.A.R.** (Context, Action, Result) - Simple but powerful for direct requests
 
-**For Precision & Detail:**
-• **RISEN** - Role, Instructions, Steps, End goal, Narrowing
-• **Advanced structuring** with specific requirements and constraints
+**🎯 For Laser-Sharp Precision:**
+• **RISEN** (Role, Instructions, Steps, End goal, Narrowing) - When you need detailed, step-by-step magic
+• **Advanced structuring** with all the bells and whistles for complex requirements
 
-**For Creative & Innovative Prompts:**
-• **IDEA** - Inspire, Define, Explore, Act
-• **Creative enhancement** techniques for brainstorming and ideation
+**🚀 For Creative Brilliance:**
+• **IDEA** (Inspire, Define, Explore, Act) - Perfect for brainstorming and innovation
+• **Creative enhancement** techniques that spark imagination and get those creative juices flowing
 
-**What you'll get:**
-• A significantly improved version of your prompt
-• Clear explanation of what was enhanced and why
-• Ready-to-use prompt that gets better AI responses
+**Here's what makes me so excited to work with you:**
+✨ You'll get a dramatically improved prompt that actually works
+🔍 I'll explain exactly what I changed and why (no mystery black box here!)
+🎯 You'll walk away with a ready-to-use masterpiece that gets incredible AI responses
 
-**Ready to try it?** Just paste any prompt you want me to refine!"""
+**Want to see this magic in action?** Just drop any prompt on me - even the most basic one - and watch me transform it into something spectacular! 🪄"""
 
     else:
-        response_content = """I'm here to help refine prompts! 
+        response_content = """Hey there! 👋 I'm your friendly prompt transformation specialist, and I'm here to turn your ideas into prompt gold! ✨
 
-Please share any prompt you'd like me to improve - whether it's for writing, coding, planning, or any other task. I'll analyze it and provide you with an enhanced version that gets better results.
+Whatever you've got brewing in your mind - a simple request, a complex project, or even just a rough idea - I'm here to help you polish it into something that gets absolutely amazing results from AI models.
 
-**Examples:**
-• "Write an email" 
-• "Create a lesson plan"
-• "Help me brainstorm ideas"
-• "Generate code for..."
+**I love working on all kinds of prompts:**
+🖊️ "Write an email" → Let's make it compelling and effective!
+📚 "Create a lesson plan" → We'll make it engaging and comprehensive!
+💡 "Help me brainstorm ideas" → Perfect! I'll structure it for maximum creativity!
+💻 "Generate code for..." → Let's get specific and build something awesome!
 
-Just paste your prompt and I'll get started!"""
+**Here's the deal:** Just paste whatever prompt you have - even if it feels rough or incomplete. I'll work my magic and show you exactly how to make it shine! 
+
+Ready to see what we can create together? 🚀"""
     
     return {"messages": [AIMessage(content=response_content)]}
 
@@ -209,18 +211,18 @@ Based ONLY on this context, provide a clear and concise answer to the user's que
         return {"messages": [AIMessage(content=final_response.content)]}
     else:
         # This is the original analysis logic for refinement tasks
-        analysis_prompt = f"""You are a helpful prompt engineering assistant. A user asked you to improve their prompt: "{original_prompt}"
+        analysis_prompt = f"""You are an enthusiastic and friendly prompt engineering coach who just helped transform a user's prompt. The user originally wanted: "{original_prompt}"
 
-You used the {framework_used} framework to enhance it, and here's the improved version: {refined_prompt}
+You used the {framework_used} approach to create this amazing enhanced version: {refined_prompt}
 
-Create a friendly, conversational response that:
-1. Briefly acknowledges what they wanted to create
-2. Highlights 2-3 key improvements you made (be specific about what was added/improved)
-3. Presents the refined prompt in a clear, formatted way
-4. Ends with an encouraging note about how this will help them get better results
+Write a warm, engaging response that shows your genuine excitement about the transformation. Include:
 
-Keep it conversational and focus on the practical benefits for the user, not technical framework details.
-Use a warm, helpful tone like you're a colleague offering advice.
+1. **Enthusiastic acknowledgment** - Show you understand their goal and you're excited to help
+2. **Highlight the magic** - Point out 2-3 specific improvements you made, using conversational language (avoid technical jargon)
+3. **Present the masterpiece** - Show off the refined prompt in a visually appealing way
+4. **Celebrate the success** - End with genuine enthusiasm about how much better their results will be
+
+Write like you're a passionate friend who just helped them solve a problem. Use emojis, exclamation points, and conversational phrases. Make them feel proud of what you created together!
         """
         final_response = llm.invoke(analysis_prompt)
         return {"messages": [AIMessage(content=final_response.content)], "refined_prompt": refined_prompt}
