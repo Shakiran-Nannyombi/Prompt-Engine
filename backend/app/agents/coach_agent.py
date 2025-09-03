@@ -23,7 +23,7 @@ DB_URI = os.environ.get("DATABASE_URL", "")
 if not DB_URI:
     raise RuntimeError("DATABASE_URL is not set in environment")
 
-# Enabling LangSmith for refiner agent (only if tracing is enabled)
+# Enabling LangSmith for coach agent (only if tracing is enabled)
 os.environ["LANGSMITH_API_KEY"] = os.environ.get("COACH_LANGSMITH_API_KEY", "")
 os.environ["LANGSMITH_PROJECT"] = os.environ.get("LANGSMITH_PROJECT", "coach_agent")
 
