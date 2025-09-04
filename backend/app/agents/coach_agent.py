@@ -98,7 +98,6 @@ def start_coaching(state: CoachingState):
 def process_task_input(state: CoachingState):
     messages = state.get("messages", [])
     if not messages or not isinstance(messages[-1], HumanMessage):
-        # Should never happen with proper routing, but just in case
         return {"current_step": "error"}
     
     last_message = messages[-1]
@@ -126,7 +125,7 @@ def process_task_input(state: CoachingState):
             "current_step": "awaiting_task_input"
         }
         
-        # Check if user wants suggestions
+    # Check if user wants suggestions
     if any(keyword in user_input for keyword in ["suggest", "suggestion", "random", "idea", "help me think"]):
         suggestion_prompt = """
         Generate 4 creative and diverse task ideas for prompt engineering practice. 
@@ -153,11 +152,24 @@ def process_task_input(state: CoachingState):
     original_task = last_message.content
     corrected_task = correct_grammar(original_task)
     
-    # Evaluate the task using corrected version
+    # Storing task and moving to evaluation
+    return {
+        "task": original_task,
+        "task_corrected": corrected_task,
+        "current_step": "evaluating_task"
+    }
+
+def task_evaluation(state: CoachingState):
+    task = state.get("task_corrected", state.get("task", ""))
+    
+    # Skip evaluation if task is empty
+    if not task:
+        return {"current_step": "awaiting_task_input"}
+    
     instruction = f"""
     Evaluate the following user-defined task based on clarity, specificity, and actionability.
     Check if they have included a persona and output format.
-    User's Task: "{corrected_task}"
+    User's Task: "{task}"
     
    ACCEPT the task if it describes:
     - Any type of content creation (essays, stories, code, etc.)
@@ -174,7 +186,7 @@ def process_task_input(state: CoachingState):
     Be ENCOURAGING and HELPFUL. Most user inputs should be accepted as valid starting points.
     If the task is somewhat vague but shows clear intent, ACCEPT it and suggest improvements in the feedback.
     
-    For the task: "{corrected_task}"
+    For the task: "{task}"
     - Does this describe something the user wants to accomplish? 
     - Is it a reasonable request for AI assistance?
     
@@ -182,58 +194,58 @@ def process_task_input(state: CoachingState):
     If the task could be more specific, still mark as correct but suggest enhancements.
     """
     
-    result: EvaluationResult = evaluation_llm.invoke(instruction) 
-    # Use corrected task for processing
-    final_task = corrected_task
-    
-    if result.is_correct:
-        context_prompt = f"""
-        Fantastic! I love what you're going for: **"{final_task}"** 
+    try:
+        result: EvaluationResult = evaluation_llm.invoke(instruction)
         
-        Now here's where we get to add some real magic! Think of context as the secret sauce that transforms a good prompt into an absolutely amazing one. It's like giving your AI assistant all the insider knowledge they need to nail exactly what you want.
-        
-        **Here's what would be super helpful to know:**
-        
-        - **Who's this for?** (Your audience - are we talking to beginners, experts, kids, professionals?)
-        
-        - **What's the vibe?** (Formal, casual, fun, professional? And how do you want the output formatted - bullet points, tables, paragraphs?)
-        
-        - **What's the setting?** (Any background info, constraints, or special requirements I should know about?)
-        
-        - **How will you use this?** (Is this for work, school, personal projects, daily use?)
-        
-        **Pro tip:** If you want to add a persona (like "You are an expert teacher" or "Act as a friendly advisor"), that can work wonders too, but it's totally optional!
-        
-        **Tell me more about your situation!** The more details you share, the better we can tailor this prompt to work perfectly for you. 
-        """
-        
-        # Ensures we progress to context step
+        if result.is_correct:
+            context_prompt = f"""
+            Fantastic! I love what you're going for: **"{task}"** 
+            
+            Now here's where we get to add some real magic! Think of context as the secret sauce that transforms a good prompt into an absolutely amazing one. It's like giving your AI assistant all the insider knowledge they need to nail exactly what you want.
+            
+            **Here's what would be super helpful to know:**
+            
+            - **Who's this for?** (Your audience - are we talking to beginners, experts, kids, professionals?)
+            
+            - **What's the vibe?** (Formal, casual, fun, professional? And how do you want the output formatted - bullet points, tables, paragraphs?)
+            
+            - **What's the setting?** (Any background info, constraints, or special requirements I should know about?)
+            
+            - **How will you use this?** (Is this for work, school, personal projects, daily use?)
+            
+            **Pro tip:** If you want to add a persona (like "You are an expert teacher" or "Act as a friendly advisor"), that can work wonders too, but it's totally optional!
+            
+            **Tell me more about your situation!** The more details you share, the better we can tailor this prompt to work perfectly for you. 
+            """
+            
+            return {
+                "evaluation_result": result,
+                "messages": [AIMessage(content=context_prompt)],
+                "current_step": "awaiting_context_input"
+            }
+        else:
+            feedback_message = f"""
+            Hey, no worries at all! I can see you've got something in mind, but I'd love to understand your vision a bit better so I can give you the best help possible! 
+            
+            {result.feedback}
+            
+            **Here are some examples of the cool stuff we could work on together:**
+            - "Help me create a friendly customer service chatbot"
+            - "I need to write a compelling essay about climate change"  
+            - "Build a smart calculator app that explains the steps"
+            - "Design an interactive math lesson that keeps students engaged"
+            
+            **What's your dream project?** I'm here to help you bring any idea to life - just paint me a picture of what you're imagining! 
+            """
+            return {
+                "evaluation_result": result,
+                "messages": [AIMessage(content=feedback_message)],
+                "current_step": "awaiting_task_input"
+            }
+    except Exception as e:
+        # Fallback if evaluation fails
         return {
-            "task": original_task,
-            "task_corrected": final_task,
-            "evaluation_result": result,
-            "messages": [AIMessage(content=context_prompt)],
-            "current_step": "awaiting_context_input"
-        }
-    else:
-        feedback_message = f"""
-        Hey, no worries at all! I can see you've got something in mind, but I'd love to understand your vision a bit better so I can give you the best help possible! 
-        
-        {result.feedback}
-        
-        **Here are some examples of the cool stuff we could work on together:**
-        - "Help me create a friendly customer service chatbot"
-        - "I need to write a compelling essay about climate change"  
-        - "Build a smart calculator app that explains the steps"
-        - "Design an interactive math lesson that keeps students engaged"
-        
-        **What's your dream project?** I'm here to help you bring any idea to life - just paint me a picture of what you're imagining! 
-        """
-        return {
-            "task": original_task,
-            "task_corrected": final_task,
-            "evaluation_result": result,
-            "messages": [AIMessage(content=feedback_message)],
+            "messages": [AIMessage(content="I had trouble evaluating your task. Could you please rephrase it?")],
             "current_step": "awaiting_task_input"
         }
 
@@ -243,68 +255,83 @@ def process_context_input(state: CoachingState):
         return {"current_step": "error"}
     
     last_message = messages[-1]
-    task = state.get("task_corrected", state.get("task", ""))  # Use corrected task
     
     # Automatically correct grammar in context input
     original_context = last_message.content
     corrected_context = correct_grammar(original_context)
     
+    # Storing context and moving to evaluation
+    return {
+        "context": original_context,
+        "context_corrected": corrected_context,
+        "current_step": "evaluating_context"
+    }
+
+def context_evaluation(state: CoachingState):
+    context = state.get("context_corrected", state.get("context", ""))
+    task = state.get("task_corrected", state.get("task", ""))
+    
+    # Skip evaluation if context is empty
+    if not context:
+        return {"current_step": "awaiting_context_input"}
+    
     instruction = f"""
     Evaluate the following user-defined context based on relevance, completeness, and clarity.
     Analyze how well it supports the task: "{task}"
-    User's Context: "{corrected_context}"
+    User's Context: "{context}"
     Is this context description sufficient to proceed?
     """
     
-    result: EvaluationResult = evaluation_llm.invoke(instruction) 
-    # Using corrected context for processing
-    final_context = corrected_context
-    
-    if result.is_correct:
-        reference_prompt = f"""
-        Awesome, this context is perfect! You've really painted a clear picture: "{final_context}"
+    try:
+        result: EvaluationResult = evaluation_llm.invoke(instruction)
         
-        Now for the final piece of our puzzle - let's talk about references! Think of these as the "inspiration files" or "cheat sheets" that will make your prompt absolutely shine.
-        
-        **What kind of goodies do you have to work with?**
-        
-        - **Got any examples?** (Similar prompts, templates, or outputs you've seen that you love?)
-        
-        - **Helpful resources?** (Websites, documents, style guides, or specific data you want included?)
-        
-        - **Style preferences?** (Any particular tone, format, or approach you want to follow?)
-        
-        - **Industry insights?** (Specific knowledge, jargon, or standards from your field?)
-        
-        **Don't stress if you don't have much!** Even something like "I like how ChatGPT explains things simply" or "Make it sound like a friendly expert" counts as valuable reference info.
-        
-        **What resources or examples can you share with me?** Every little bit helps us craft something amazing! ✨
-        """
-        
+        if result.is_correct:
+            reference_prompt = f"""
+            Awesome, this context is perfect! You've really painted a clear picture: "{context}"
+            
+            Now for the final piece of our puzzle - let's talk about references! Think of these as the "inspiration files" or "cheat sheets" that will make your prompt absolutely shine.
+            
+            **What kind of goodies do you have to work with?**
+            
+            - **Got any examples?** (Similar prompts, templates, or outputs you've seen that you love?)
+            
+            - **Helpful resources?** (Websites, documents, style guides, or specific data you want included?)
+            
+            - **Style preferences?** (Any particular tone, format, or approach you want to follow?)
+            
+            - **Industry insights?** (Specific knowledge, jargon, or standards from your field?)
+            
+            **Don't stress if you don't have much!** Even something like "I like how ChatGPT explains things simply" or "Make it sound like a friendly expert" counts as valuable reference info.
+            
+            **What resources or examples can you share with me?** Every little bit helps us craft something amazing! ✨
+            """
+            
+            return {
+                "evaluation_result": result,
+                "messages": [AIMessage(content=reference_prompt)],
+                "current_step": "awaiting_reference_input"
+            }
+        else:
+            checklist = f"""
+            Your context can mention:
+            - Courses, audience, level, constraints (e.g., hours/week)
+            - Key goals and priorities
+            - Any constraints or deadlines
+            
+            Examples tailored to your task:
+            1) "I'm a 3rd-year CS student taking AI, UI, Embedded Systems. I have 20 hours/week. I need a weekly plan with exam countdowns."
+            2) "I work 15 hours/week part-time. Prefer a Markdown table with days Mon–Sun, morning/evening slots, and focus sessions for metrics and evolution."
+            """
+            feedback_message = f"{result.feedback}\n\nPlease provide more detailed context and try again.\n\n{checklist}\n\nPlease share your context, then we'll proceed to references."
+            return {
+                "evaluation_result": result,
+                "messages": [AIMessage(content=feedback_message)],
+                "current_step": "awaiting_context_input"
+            }
+    except Exception as e:
+        # Fallback if evaluation fails
         return {
-            "context": original_context,
-            "context_corrected": final_context,
-            "evaluation_result": result,
-            "messages": [AIMessage(content=reference_prompt)],
-            "current_step": "awaiting_reference_input"
-        }
-    else:
-        checklist = f"""
-        Your context can mention:
-        - Courses, audience, level, constraints (e.g., hours/week)
-        - Key goals and priorities
-        - Any constraints or deadlines
-        
-        Examples tailored to your task:
-        1) "I'm a 3rd-year CS student taking AI, UI, Embedded Systems. I have 20 hours/week. I need a weekly plan with exam countdowns."
-        2) "I work 15 hours/week part-time. Prefer a Markdown table with days Mon–Sun, morning/evening slots, and focus sessions for metrics and evolution."
-        """
-        feedback_message = f"{result.feedback}\n\nPlease provide more detailed context and try again.\n\n{checklist}\n\nPlease share your context, then we'll proceed to references."
-        return {
-            "context": original_context,
-            "context_corrected": final_context,
-            "evaluation_result": result,
-            "messages": [AIMessage(content=feedback_message)],
+            "messages": [AIMessage(content="I had trouble evaluating your context. Could you please provide more details?")],
             "current_step": "awaiting_context_input"
         }
 
@@ -314,8 +341,8 @@ def process_reference_input(state: CoachingState):
         return {"current_step": "error"}
     
     last_message = messages[-1]
-    task = state.get("task_corrected", state.get("task", ""))  # Use corrected task
-    context = state.get("context_corrected", state.get("context", ""))  # Use corrected context
+    task = state.get("task_corrected", state.get("task", ""))
+    context = state.get("context_corrected", state.get("context", ""))
     
     # Automatically correct grammar in reference input
     original_references = last_message.content
@@ -329,40 +356,13 @@ def process_reference_input(state: CoachingState):
         "i dont have responses", "i dont have any"
     ]
     
-    # If user explicitly says "proceed without references", move forward immediately
+    # If user explicitly says "proceed without references", set empty and continue
     if any(p in user_refs for p in proceed_explicit_patterns):
         final_references = "No specific references provided - proceeding with general best practices"
-        summary = f"""
-        **Task:** {task}
-        **Context:** {context}
-        **References:** {final_references}
-        """
-        
-        final_prompt_guidance = f"""
-        Perfect! No worries about references - we've got everything we need to create something amazing! 
-
-        Look at what we've built together:
-        {summary}
-
-        **Now comes the exciting part - let's create your masterpiece!** 
-
-        Time to weave all these elements into one powerful, cohesive prompt. Think of yourself as a master chef combining the perfect ingredients:
-
-        - **Your task** (with that perfect persona/role and output format we discussed)
-        - **Your context** (all that juicy background info)
-        - **Crystal-clear instructions** (so your AI knows exactly what you want)
-
-        **Ready to create your final prompt?** Pour all of this goodness into one beautifully crafted instruction that will get you amazing results every time!
-
-        I'm so excited to see what you come up with! 
-        """
-        
         return {
             "references": [original_references],
             "references_corrected": [final_references],
-            "summary": summary,
-            "messages": [AIMessage(content=final_prompt_guidance)],
-            "current_step": "awaiting_final_prompt"
+            "current_step": "evaluating_references"
         }
     
     # If user says they don't have references (first time), offer suggestions
@@ -408,57 +408,76 @@ def process_reference_input(state: CoachingState):
             "current_step": "awaiting_reference_input"
         }
     
+    # Storing references and moving to evaluation
+    return {
+        "references": [original_references],
+        "references_corrected": [corrected_references],
+        "current_step": "evaluating_references"
+    }
+
+def reference_evaluation(state: CoachingState):
+    references = state.get("references_corrected", state.get("references", []))
+    task = state.get("task_corrected", state.get("task", ""))
+    context = state.get("context_corrected", state.get("context", ""))
+    
+    # Handle empty references case
+    if not references or not references[0]:
+        return {"current_step": "awaiting_reference_input"}
+    
+    reference_text = references[0] if isinstance(references, list) else references
+    
     instruction = f"""
     Evaluate the following user-defined references based on relevance, credibility, and usefulness.
-    Task: "{task}", Context: "{context}", References: "{corrected_references}"
+    Task: "{task}", Context: "{context}", References: "{reference_text}"
     Is this reference description sufficient to proceed?
     """
     
-    result: EvaluationResult = evaluation_llm.invoke(instruction) 
-    # Using corrected references for processing
-    final_references = corrected_references
-    
-    if result.is_correct:
-        summary = f"""
-        **Task:** {task}
-        **Context:** {context}
-        **References:** {final_references}
-        """
+    try:
+        result: EvaluationResult = evaluation_llm.invoke(instruction)
         
-        final_prompt_guidance = f"""
-        YES! We've got all the ingredients for something truly spectacular! Look at what we've built together:
-        
-        {summary}
-        
-        **Now comes the exciting part - let's create your masterpiece!** 
-        
-        Time to weave all these elements into one powerful, cohesive prompt. Think of yourself as a master chef combining the perfect ingredients:
-        
-        - **Your task** (with that perfect persona/role and output format we discussed)
-        - **Your context** (all that juicy background info)
-        - **Your references** (those helpful resources and examples)
-        - **Crystal-clear instructions** (so your AI knows exactly what you want)
-        
-        **Ready to create your final prompt?** Pour all of this goodness into one beautifully crafted instruction that will get you amazing results every time!
-        
-        I'm so excited to see what you come up with! 
-        """
-        
+        if result.is_correct:
+            summary = f"""
+            **Task:** {task}
+            **Context:** {context}
+            **References:** {reference_text}
+            """
+            
+            final_prompt_guidance = f"""
+            YES! We've got all the ingredients for something truly spectacular! Look at what we've built together:
+            
+            {summary}
+            
+            **Now comes the exciting part - let's create your masterpiece!** 
+            
+            Time to weave all these elements into one powerful, cohesive prompt. Think of yourself as a master chef combining the perfect ingredients:
+            
+            - **Your task** (with that perfect persona/role and output format we discussed)
+            - **Your context** (all that juicy background info)
+            - **Your references** (those helpful resources and examples)
+            - **Crystal-clear instructions** (so your AI knows exactly what you want)
+            
+            **Ready to create your final prompt?** Pour all of this goodness into one beautifully crafted instruction that will get you amazing results every time!
+            
+            I'm so excited to see what you come up with! 
+            """
+            
+            return {
+                "evaluation_result": result,
+                "summary": summary,
+                "messages": [AIMessage(content=final_prompt_guidance)],
+                "current_step": "awaiting_final_prompt"
+            }
+        else:
+            feedback_message = f"{result.feedback}\n\nPlease provide better references and try again."
+            return {
+                "evaluation_result": result,
+                "messages": [AIMessage(content=feedback_message)],
+                "current_step": "awaiting_reference_input"
+            }
+    except Exception as e:
+        # Fallback if evaluation fails
         return {
-            "references": [original_references],
-            "references_corrected": [final_references],
-            "evaluation_result": result,
-            "summary": summary,
-            "messages": [AIMessage(content=final_prompt_guidance)],
-            "current_step": "awaiting_final_prompt"
-        }
-    else:
-        feedback_message = f"{result.feedback}\n\nPlease provide better references and try again."
-        return {
-            "references": [original_references],
-            "references_corrected": [final_references],
-            "evaluation_result": result,
-            "messages": [AIMessage(content=feedback_message)],
+            "messages": [AIMessage(content="I had trouble evaluating your references. Could you please provide more details?")],
             "current_step": "awaiting_reference_input"
         }
 
@@ -474,53 +493,12 @@ def process_final_prompt(state: CoachingState):
     original_final_prompt = last_message.content
     corrected_final_prompt = correct_grammar(original_final_prompt)
     
-    evaluation_instruction = f"""
-    Evaluate this final prompt for clarity, completeness, and effectiveness:
-    Framework used: {summary}
-    Final prompt: "{corrected_final_prompt}"
-    
-    Is this prompt well-structured and ready to use?
-    """
-    
-    result: EvaluationResult = evaluation_llm.invoke(evaluation_instruction)
-    
-    if result.is_correct:
-        # brief rubric and compatibility text for tests
-        rubric = "- Clarity: ✓  - Constraints: ✓/✗  - Format specified: ✓/✗  - References used: ✓/✗"
-        preface = f"Your prompt looks solid. Here's a quick rubric check:\n{rubric}\nExcellent prompt! Let me polish it for you..."
-        return {
-            "final_prompt": original_final_prompt,
-            "final_prompt_corrected": corrected_final_prompt,
-            "messages": [AIMessage(content=preface)],
-            "current_step": "ready_to_refine"
-        }
-    else:
-        feedback_message = f"{result.feedback}\n\nPlease refine your prompt based on this feedback."
-        return {
-            "evaluation_result": result,
-            "messages": [AIMessage(content=feedback_message)],
-            "current_step": "awaiting_final_prompt"
-        }
-
-def agent_node(state: CoachingState):
-    # Agent node acts as the brain that uses tools to refine the final prompt
-    final_prompt = state.get("final_prompt_corrected", state.get("final_prompt", ""))
-    refine_instruction = f"The final prompt has been grammar-corrected and is ready for further refinement: {final_prompt}"
-    
-    messages = state.get("messages", [])
-    messages.append(SystemMessage(content=refine_instruction))
-    
-    response = llm_with_tools.invoke(messages)
-    return {"messages": [response]}
-
-def should_call_tools(state: CoachingState) -> str:
-    # Checks if we should call tools
-    messages = state.get("messages", [])
-    if messages:
-        last_message = messages[-1]
-        if hasattr(last_message, 'tool_calls') and last_message.tool_calls:
-            return "call_tools"
-    return "display_final_result"
+    # Store the final prompt and prepare for tool refinement
+    return {
+        "final_prompt": original_final_prompt,
+        "final_prompt_corrected": corrected_final_prompt,
+        "current_step": "refining_prompt"
+    }
 
 def display_final_result(state: CoachingState):
     final_prompt = state.get("final_prompt_corrected", state.get("final_prompt", ""))
@@ -554,15 +532,10 @@ This prompt is ready to use with any AI model, and I have a feeling it's going t
         "current_step": "completed"
     }
 
-# Routing user input to the appropriate processing node based on current step
+# Routing based on current step in the new simplified flow
 def decide_next_step(state: CoachingState) -> str:
     current_step = state.get("current_step", "")
     messages = state.get("messages", [])
-    # Checking for the existing updated state
-    has_task = bool(state.get("task"))
-    has_context = bool(state.get("context"))
-    has_references = bool(state.get("references"))
-    has_final_prompt = bool(state.get("final_prompt"))
     
     # Check if we have a user message
     if not messages:
@@ -572,7 +545,7 @@ def decide_next_step(state: CoachingState) -> str:
         # Last was assistant/system; wait for user input
         return END
     
-    # Route based on current step
+    # Route based on current step for new flow structure
     if current_step == "awaiting_task_input":
         return "process_task_input"
     elif current_step == "awaiting_context_input":
@@ -582,38 +555,31 @@ def decide_next_step(state: CoachingState) -> str:
     elif current_step == "awaiting_final_prompt":
         return "process_final_prompt"
     else:
-        if has_final_prompt:
-            return "agent_node"
-        if has_references:
-            return "process_final_prompt"
-        if has_context:
-            return "process_reference_input"
-        if has_task:
-            return "process_context_input"
+        # Fallback to task input if step is unclear
         return "process_task_input"
 
 # Router that just routes
 def await_user_input_node(state: CoachingState):
     return state
 
-# Graph building
+# Graph building with new simplified flow
 builder = StateGraph(CoachingState)
 
-# Add all nodes
+# Adding all nodes
 builder.add_node("start_coaching", start_coaching)
 builder.add_node("await_user_input", await_user_input_node) 
 builder.add_node("process_task_input", process_task_input)
+builder.add_node("task_evaluation", task_evaluation)
 builder.add_node("process_context_input", process_context_input)
+builder.add_node("context_evaluation", context_evaluation)
 builder.add_node("process_reference_input", process_reference_input)
+builder.add_node("reference_evaluation", reference_evaluation)
 builder.add_node("process_final_prompt", process_final_prompt)
-builder.add_node("agent_node", agent_node)
 builder.add_node("tool_node", tool_node)
 builder.add_node("display_final_result", display_final_result)
 
-# Starting always goes to start_coaching
+# Adding edges
 builder.add_edge(START, "start_coaching")
-
-# From start_coaching, go to router to wait for user input
 builder.add_edge("start_coaching", "await_user_input")
 
 # Router conditionally routes to processing nodes based on user input and current step
@@ -630,9 +596,10 @@ builder.add_conditional_edges(
     }
 )
 
-# Each processing node has conditional edges based on success/failure
+# Processing to Evaluation to Next step or back to input
+builder.add_edge("process_task_input", "task_evaluation")
 builder.add_conditional_edges(
-    "process_task_input",
+    "task_evaluation",
     lambda state: "process_context_input" if state.get("current_step") == "awaiting_context_input" else "await_user_input",
     {
         "process_context_input": "process_context_input",
@@ -640,43 +607,27 @@ builder.add_conditional_edges(
     }
 )
 
+builder.add_edge("process_context_input", "context_evaluation")
 builder.add_conditional_edges(
-    "process_context_input", 
-    lambda state: "process_reference_input" if state.get("current_step") == "awaiting_reference_input" else "await_user_input",
+    "context_evaluation",
+    lambda state: "process_reference_input" if state.get("current_step") == "awaiting_reference_input" else "process_task_input",
     {
         "process_reference_input": "process_reference_input",
-        "await_user_input": "await_user_input"
+        "process_task_input": "process_task_input"  # Invalid context goes back to task
     }
 )
 
+builder.add_edge("process_reference_input", "reference_evaluation")
 builder.add_conditional_edges(
-    "process_reference_input",
-    lambda state: "process_final_prompt" if state.get("current_step") == "awaiting_final_prompt" else "await_user_input",
+    "reference_evaluation",
+    lambda state: "process_final_prompt" if state.get("current_step") == "awaiting_final_prompt" else "process_context_input",
     {
-        "process_final_prompt": "process_final_prompt", 
-        "await_user_input": "await_user_input"
+        "process_final_prompt": "process_final_prompt",
+        "process_context_input": "process_context_input"  # Invalid references go back to context
     }
 )
 
-builder.add_conditional_edges(
-    "process_final_prompt",
-    lambda state: "agent_node" if state.get("current_step") == "ready_to_refine" else "await_user_input",
-    {
-        "agent_node": "agent_node",
-        "await_user_input": "await_user_input"
-    }
-)
-
-# Tool execution flow
-builder.add_conditional_edges(
-    "agent_node",
-    should_call_tools,
-    {
-        "call_tools": "tool_node",
-        "display_final_result": "display_final_result"
-    }
-)
-
+builder.add_edge("process_final_prompt", "tool_node")
 builder.add_edge("tool_node", "display_final_result")
 builder.add_edge("display_final_result", END)
 
