@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
-from app.models.refinerResponse import RefinerResponse
-from app.models.refinerRequest import RefinerRequest
-from app.models.refine_prompt import RefinementAnalysis
-from app.agents import refiner_agent
+from models.refinerResponse import RefinerResponse
+from models.refinerRequest import RefinerRequest
+from models.refine_prompt import RefinementAnalysis
+from agents import refiner_agent
 import uuid
 from typing import Dict
 

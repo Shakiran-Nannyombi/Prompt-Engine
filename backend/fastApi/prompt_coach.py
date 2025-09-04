@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from app.models.coachResponse import CoachingResponse
-from app.models.coachRequest import CoachingRequest
-from app.agents import coach_agent
+from models.coachResponse import CoachingResponse
+from models.coachRequest import CoachingRequest
+from agents import coach_agent
 import uuid
 from typing import Dict
 

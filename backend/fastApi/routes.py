@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.fastApi import prompt_coach, prompt_refiner
+from fastApi import prompt_coach, prompt_refiner
 
 api_router = APIRouter()
 
