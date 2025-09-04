@@ -532,42 +532,46 @@ This prompt is ready to use with any AI model, and I have a feeling it's going t
         "current_step": "completed"
     }
 
-# Routing based on current step in the new simplified flow
-def decide_next_step(state: CoachingState) -> str:
-    current_step = state.get("current_step", "")
+# Simple router just for starting the coaching flow
+def route_from_start(state: CoachingState) -> str:
     messages = state.get("messages", [])
     
-    # Check if we have a user message
     if not messages:
-        # Nothing yet; start coaching
         return "start_coaching"
     if not isinstance(messages[-1], HumanMessage):
-        # Last was assistant/system; wait for user input
         return END
+        
+    return "process_task_input"
+
+# Check if we need to call tools at any step
+def should_call_tools(state: CoachingState) -> str:
+    """Determine if tools should be called based on user input"""
+    messages = state.get("messages", [])
     
-    # Route based on current step for new flow structure
-    if current_step == "awaiting_task_input":
-        return "process_task_input"
-    elif current_step == "awaiting_context_input":
-        return "process_context_input"  
-    elif current_step == "awaiting_reference_input":
-        return "process_reference_input"
-    elif current_step == "awaiting_final_prompt":
-        return "process_final_prompt"
-    else:
-        # Fallback to task input if step is unclear
-        return "process_task_input"
+    # Check for tool calls from LLM
+    if messages and hasattr(messages[-1], 'tool_calls') and messages[-1].tool_calls:
+        return "call_tools"
+    
+    # Check for search triggers in user input
+    user_input = ""
+    for msg in reversed(messages):
+        if isinstance(msg, HumanMessage):
+            user_input = msg.content.lower()
+            break
+    
+    search_triggers = ["search", "find", "examples", "help me think", "suggestions", "research"]
+    needs_search = any(trigger in user_input for trigger in search_triggers)
+    
+    if needs_search:
+        return "call_tools"
+    
+    return "continue"
 
-# Router that just routes
-def await_user_input_node(state: CoachingState):
-    return state
-
-# Graph building with new simplified flow
+# Graph building with simplified linear flow
 builder = StateGraph(CoachingState)
 
-# Adding all nodes
+# Adding all nodes (removed await_user_input)
 builder.add_node("start_coaching", start_coaching)
-builder.add_node("await_user_input", await_user_input_node) 
 builder.add_node("process_task_input", process_task_input)
 builder.add_node("task_evaluation", task_evaluation)
 builder.add_node("process_context_input", process_context_input)
@@ -578,57 +582,60 @@ builder.add_node("process_final_prompt", process_final_prompt)
 builder.add_node("tool_node", tool_node)
 builder.add_node("display_final_result", display_final_result)
 
-# Adding edges
+# Adding edges for simplified linear flow
 builder.add_edge(START, "start_coaching")
-builder.add_edge("start_coaching", "await_user_input")
 
-# Router conditionally routes to processing nodes based on user input and current step
+# After welcome message, wait for user input then go to task processing
 builder.add_conditional_edges(
-    "await_user_input",
-    decide_next_step,
+    "start_coaching",
+    route_from_start,
     {
         "start_coaching": "start_coaching",
         "process_task_input": "process_task_input",
-        "process_context_input": "process_context_input",
-        "process_reference_input": "process_reference_input", 
-        "process_final_prompt": "process_final_prompt",
         END: END
     }
 )
 
-# Processing to Evaluation to Next step or back to input
+# Linear flow with validation loops (matches the flow diagram)
 builder.add_edge("process_task_input", "task_evaluation")
+
 builder.add_conditional_edges(
     "task_evaluation",
-    lambda state: "process_context_input" if state.get("current_step") == "awaiting_context_input" else "await_user_input",
+    lambda state: "process_context_input" if state.get("current_step") == "awaiting_context_input" 
+                  else "process_task_input",  # Loop back for invalid input
     {
         "process_context_input": "process_context_input",
-        "await_user_input": "await_user_input"
+        "process_task_input": "process_task_input"
     }
 )
 
 builder.add_edge("process_context_input", "context_evaluation")
+
 builder.add_conditional_edges(
-    "context_evaluation",
-    lambda state: "process_reference_input" if state.get("current_step") == "awaiting_reference_input" else "process_task_input",
+    "context_evaluation", 
+    lambda state: "process_reference_input" if state.get("current_step") == "awaiting_reference_input"
+                  else "process_context_input",  # Loop back for invalid context
     {
         "process_reference_input": "process_reference_input",
-        "process_task_input": "process_task_input"  # Invalid context goes back to task
+        "process_context_input": "process_context_input"
     }
 )
 
 builder.add_edge("process_reference_input", "reference_evaluation")
+
 builder.add_conditional_edges(
     "reference_evaluation",
-    lambda state: "process_final_prompt" if state.get("current_step") == "awaiting_final_prompt" else "process_context_input",
+    lambda state: "process_final_prompt" if state.get("current_step") == "awaiting_final_prompt"
+                  else "process_reference_input",  # Loop back for invalid references  
     {
         "process_final_prompt": "process_final_prompt",
-        "process_context_input": "process_context_input"  # Invalid references go back to context
+        "process_reference_input": "process_reference_input"
     }
 )
 
+# Final prompt goes to tools then display
 builder.add_edge("process_final_prompt", "tool_node")
-builder.add_edge("tool_node", "display_final_result")
+builder.add_edge("tool_node", "display_final_result") 
 builder.add_edge("display_final_result", END)
 
 # compiling the graph with memory using a persistent connection
