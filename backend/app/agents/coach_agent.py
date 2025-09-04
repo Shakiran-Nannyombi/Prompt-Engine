@@ -532,17 +532,6 @@ This prompt is ready to use with any AI model, and I have a feeling it's going t
         "current_step": "completed"
     }
 
-# Simple router just for starting the coaching flow
-def route_from_start(state: CoachingState) -> str:
-    messages = state.get("messages", [])
-    
-    if not messages:
-        return "start_coaching"
-    if not isinstance(messages[-1], HumanMessage):
-        return END
-        
-    return "process_task_input"
-
 # Check if we need to call tools at any step
 def should_call_tools(state: CoachingState) -> str:
     """Determine if tools should be called based on user input"""
@@ -584,19 +573,7 @@ builder.add_node("display_final_result", display_final_result)
 
 # Adding edges for simplified linear flow
 builder.add_edge(START, "start_coaching")
-
-# After welcome message, wait for user input then go to task processing
-builder.add_conditional_edges(
-    "start_coaching",
-    route_from_start,
-    {
-        "start_coaching": "start_coaching",
-        "process_task_input": "process_task_input",
-        END: END
-    }
-)
-
-# Linear flow with validation loops (matches the flow diagram)
+builder.add_edge("start_coaching", "process_task_input")
 builder.add_edge("process_task_input", "task_evaluation")
 
 builder.add_conditional_edges(
