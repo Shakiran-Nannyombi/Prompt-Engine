@@ -44,6 +44,83 @@ This is a list of problems gathered from Reddit with how they impacted tyhe user
 
 ## Solution Overview
 
+The Prompt Engine addresses these challenges through a **two-agent architecture** that combines immediate results with educational guidance:
+
+### 1. **Coach Agent**
+
+<table>
+<tr>
+<td width="60%">
+
+**Guided Learning Approach**
+
+The Coach Agent solves the **"lack of engineering rigor"** problem by teaching users a structured methodology following:
+
+- **Task (Persona + Format) → Context → References → Evaluate → Iterate** framework
+- **Automatic grammar correction** at each step for clarity
+- **Intelligent evaluation** that guides users through proper prompt construction
+- **Educational feedback** that builds long-term prompting skills
+- **Linear workflow** that prevents the common mistake of "stuffing everything into one prompt"
+
+It makes sure the user masters the art of **Prompt Engineering** through strictly going through all the steps.
+
+*See detailed agent flow: [Coach Agent Mermaid Diagram](backend/graphs/coach_agent_mermaid.png)*
+
+</td>
+<td width="40%">
+
+<img src="diagrams/coachlight.png" alt="Coach Agent Flow" width="40%">
+
+</td>
+</tr>
+</table>
+
+### 2. **Refiner Agent**
+
+<table>
+<tr>
+<td width="40%">
+
+<img src="diagrams/refiner.png" alt="Refiner Agent Flow" width="70%">
+
+</td>
+<td width="60%">
+
+**Instant Expert Refinement**
+
+The Refiner Agent solves **"cargo-culting prompts"** and **"verbosity issues"** through intelligent categorization:
+
+- **Automatic prompt analysis** determines the best refinement approach
+- **Framework-based refinement** using proven methodologies (C.O.R.E., R.A.C.E., C.A.R., etc.)
+- **Category-specific optimization** for clarity, precision, or creativity needs
+- **RAG integration** for document-aware prompt enhancement
+
+*See detailed agent flow: [Refiner Agent Mermaid Diagram](backend/graphs/refiner_agent_mermaid.png)*
+
+</td>
+</tr>
+</table>
+
+**Available Categories & Frameworks:**
+
+- **Clarity** (4 frameworks): Structure & organization issues
+- **Precision** (2 frameworks): Technical accuracy & specificity
+- **Creative** (1 framework): Innovation & engagement enhancement
+- **RAG** (2 tools): Document-aware refinement
+
+*View detailed breakdown: [Refinement Categories Diagram](diagrams/categories.png)*
+
+### This architecture directly addresses the core problems
+
+- Verbose prompts → Refiner optimizes for conciseness
+- Token dilution → Coach teaches context management
+- No role framing → Both agents emphasize persona importance  
+- Cargo-culting → Coach explains *why* refinements work
+- Evaluation difficulty → Built-in feedback loops and structured assessment
+- Scaling issues → Modular approach prevents monolithic prompts
+
+**Result:** Users get both immediate prompt improvements AND develop lasting prompt engineering skills.
+
 ## Application Architecture
 
 Still in development will be updated
