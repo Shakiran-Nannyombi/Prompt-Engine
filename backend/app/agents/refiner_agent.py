@@ -31,8 +31,9 @@ tool_node = ToolNode(all_tools)
 class RefinerState(TypedDict):
     original_prompt: str
     refined_prompt: str
-    prompt_category: Literal["clarity", "precision", "creative", "greeting", "help_request", "rag_query"]
+    prompt_category: Literal["clarity", "precision", "creative", "greeting", "help_request"]
     framework_used: str
+    has_document: bool  # Flag to indicate if RAG processing is needed
     messages: Annotated[list, add_messages]
     
 # Graph Nodes
@@ -46,29 +47,36 @@ def classify_category(state: RefinerState) -> dict:
 
     greeting_patterns = ["hello", "hi", "hey", "greetings", "good morning", "good afternoon", "good evening"]
     if any(prompt_lower.startswith(p) for p in greeting_patterns):
-        return {"prompt_category": "greeting", "original_prompt": original_prompt}
+        return {"prompt_category": "greeting", "original_prompt": original_prompt, "has_document": False}
 
     help_patterns = ["framework", "help", "guide", "suggest", "recommend", "options", "what can you do"]
     if any(p in prompt_lower for p in help_patterns):
-        return {"prompt_category": "help_request", "original_prompt": original_prompt}
+        return {"prompt_category": "help_request", "original_prompt": original_prompt, "has_document": False}
 
-    # Checking for RAG content
-    rag_keywords = ["from the document", "summarize the file", "what does it say about", "in the document", "based on the file", "according to the document"]
-    if any(keyword in prompt_lower for keyword in rag_keywords):
-        return {"prompt_category": "rag_query", "original_prompt": original_prompt}
+    # Checking for document/image uploads or RAG content indicators
+    rag_keywords = [
+        "from the document", "summarize the file", "what does it say about", "in the document", 
+        "based on the file", "according to the document", "upload", "uploaded", "document", 
+        "pdf", "image", "picture", "analyze this", "what's in this"
+    ]
+    has_document = any(keyword in prompt_lower for keyword in rag_keywords) or os.path.exists("./chroma_db")
 
     analysis_prompt = f"""Analyze the user prompt and categorize it into ONLY one of the following:
-    "clarity", "precision", "creative", or "rag_query".
+    "clarity", "precision", or "creative".
 User Prompt: "{original_prompt}"
 Return only the single category name."""
 
     response = llm.invoke(analysis_prompt)
     category = response.content.strip().lower()
 
-    if category not in ["clarity", "precision", "creative", "rag_query"]:
+    if category not in ["clarity", "precision", "creative"]:
         category = "clarity"
 
-    return {"prompt_category": category, "original_prompt": original_prompt}
+    return {
+        "prompt_category": category, 
+        "original_prompt": original_prompt,
+        "has_document": has_document
+    }
 
 def handle_conversation(state: RefinerState) -> dict:
     category = state["prompt_category"]
@@ -132,21 +140,46 @@ Ready to see what we can create together? """
     
     return {"messages": [AIMessage(content=response_content)]}
 
-def refinement_agent(state: RefinerState) -> dict:
+# Prompt refinement with integrated RAG processing when documents are present.
+def process_prompt_refinement(state: RefinerState) -> dict:
     category = state["prompt_category"]
     prompt_to_refine = state["original_prompt"]
+    has_document = state.get("has_document", False)
     
-    if category == "clarity": selected_tools = clarity_tool_list
-    elif category == "precision": selected_tools = precision_tool_list
-    else: selected_tools = creative_tool_list
-
-    # Adding RAG tools if a vector store exists
-    if os.path.exists("./chroma_db"):
+    # Select appropriate tools based on category and document presence
+    if category == "clarity": 
+        selected_tools = clarity_tool_list
+    elif category == "precision": 
+        selected_tools = precision_tool_list
+    else: 
+        selected_tools = creative_tool_list
+    
+    # Add RAG tools if document is present
+    if has_document and os.path.exists("./chroma_db"):
         selected_tools = selected_tools + rag_tool_list
 
     llm_with_selected_tools = llm.bind_tools(tools=selected_tools, parallel_tool_calls=False)
 
-    system_prompt = f"""You are a prompt refinement expert helping users create better, more effective prompts.
+    if has_document:
+        system_prompt = f"""You are a prompt refinement expert helping users create better, more effective prompts.
+
+The user submitted this prompt: "{prompt_to_refine}"
+Category: {category}
+Document Available: Yes - The user has uploaded or referenced documents that should be used.
+
+Your task is to:
+1. First, if the prompt involves document analysis, call the document_search tool to gather relevant information
+2. Then, select the most appropriate refinement tool to enhance this prompt using both the original prompt and any document context
+
+Focus on making the prompt:
+- More specific and actionable with document context
+- Clearer in requirements and expectations
+- Better structured for getting quality results from both the prompt and available documents
+- More detailed about the desired output format
+
+You must call the appropriate tools to both access documents (if needed) and refine the prompt."""
+    else:
+        system_prompt = f"""You are a prompt refinement expert helping users create better, more effective prompts.
 
 The user submitted this prompt: "{prompt_to_refine}"
 Category: {category}
@@ -167,19 +200,6 @@ You must call exactly one refinement tool that best fits this prompt's needs."""
 
     return {"messages": [response], "framework_used": framework_used}
 
-def rag_agent(state: RefinerState) -> dict:
-    """Agent brain for RAG tasks that uses search tool to answer questions."""
-    question = state["original_prompt"]
-    
-    # Giving the RAG agent ONLY the search tool to avoid confusion.
-    llm_with_search = llm.bind_tools(tools=[rag_tool_list[0]], parallel_tool_calls=False) 
-
-    system_prompt = f"""You are a helpful assistant. Answer the user's question based on the context from a document search.
-Your task is to call the `document_search` tool with a query relevant to the user's question.
-User's question: "{question}" """
-
-    response = llm_with_search.invoke(system_prompt)
-    return {"messages": [response]}
 
 # Creating the final report for the user after a tool has been run.
 def generate_analysis(state: RefinerState) -> dict:
@@ -199,18 +219,29 @@ def generate_analysis(state: RefinerState) -> dict:
     if not refined_prompt:
         refined_prompt = state.get("refined_prompt", "No refined prompt available")
 
-    if category == "rag_query":
-        # Synthesize the search results into a final answer
-        synthesis_prompt = f"""The user asked: "{original_prompt}"
-You have performed a search and found the following context from the document:
----
-{refined_prompt}
----
-Based ONLY on this context, provide a clear and concise answer to the user's question."""
-        final_response = llm.invoke(synthesis_prompt)
-        return {"messages": [AIMessage(content=final_response.content)]}
+    # Handle both regular refinement and document-aware refinement
+    has_document = state.get("has_document", False)
+    
+    if has_document:
+        # Special handling for document-aware refinement
+        analysis_prompt = f"""You are an enthusiastic and friendly prompt engineering coach who just helped transform a user's prompt using their uploaded documents! 
+
+The user originally wanted: "{original_prompt}"
+You used the {framework_used} approach along with their document context to create this amazing enhanced version: {refined_prompt}
+
+Write a warm, engaging response that shows your genuine excitement about the transformation. Include:
+
+1. **Enthusiastic acknowledgment** - Show you understand their goal and you're excited to help them use their documents effectively
+2. **Highlight the document magic** - Point out how you incorporated their document content to make the prompt more specific and powerful
+3. **Present the masterpiece** - Show off the refined prompt that now leverages their actual data/content
+4. **Celebrate the success** - End with genuine enthusiasm about how much better their results will be now that they're using their own documents
+
+Write like you're a passionate friend who just helped them unlock the power of their own content. Use emojis, exclamation points, and conversational phrases. Make them feel proud of what you created together!
+        """
+        final_response = llm.invoke(analysis_prompt)
+        return {"messages": [AIMessage(content=final_response.content)], "refined_prompt": refined_prompt}
     else:
-        # This is the original analysis logic for refinement tasks
+        # Regular refinement without documents
         analysis_prompt = f"""You are an enthusiastic and friendly prompt engineering coach who just helped transform a user's prompt. The user originally wanted: "{original_prompt}"
 
 You used the {framework_used} approach to create this amazing enhanced version: {refined_prompt}
@@ -232,8 +263,7 @@ builder = StateGraph(RefinerState)
 
 builder.add_node("classify_category", classify_category)
 builder.add_node("handle_conversation", handle_conversation)
-builder.add_node("refinement_agent", refinement_agent)
-builder.add_node("rag_agent", rag_agent)
+builder.add_node("process_prompt_refinement", process_prompt_refinement)
 builder.add_node("tool_node", tool_node)
 builder.add_node("generate_analysis", generate_analysis)
 
@@ -244,34 +274,24 @@ def route_after_classification(state: RefinerState):
     if category in ["greeting", "help_request"]:
         return "handle_conversation"
     else:
-        return "refinement_agent"
+        return "process_prompt_refinement"
 
 builder.add_conditional_edges("classify_category", route_after_classification, {
     "handle_conversation": "handle_conversation",
-    "refinement_agent": "refinement_agent"
+    "process_prompt_refinement": "process_prompt_refinement"
 })
+
 builder.add_edge("handle_conversation", END)
 
-def route_after_refinement(state: RefinerState):
+def route_to_tools(state: RefinerState):
     # Check if the last message has tool calls that need to be executed
     if state["messages"] and hasattr(state["messages"][-1], 'tool_calls') and state["messages"][-1].tool_calls:
         return "tool_node"
     return "generate_analysis"
 
-def route_after_rag(state: RefinerState):
-    # Check if the last message has tool calls that need to be executed
-    if state["messages"] and hasattr(state["messages"][-1], 'tool_calls') and state["messages"][-1].tool_calls:
-        return "tool_node"
-    return "refinement_agent"
-
-builder.add_conditional_edges("refinement_agent", route_after_refinement, {
-    "tool_node": "tool_node", 
+builder.add_conditional_edges("process_prompt_refinement", route_to_tools, {
+    "tool_node": "tool_node",
     "generate_analysis": "generate_analysis"
-})
-
-builder.add_conditional_edges("rag_agent", route_after_rag, {
-    "tool_node": "tool_node", 
-    "refinement_agent": "refinement_agent"
 })
 
 builder.add_edge("tool_node", "generate_analysis")
