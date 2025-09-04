@@ -1,0 +1,24 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	classify_category(classify_category)
+	handle_conversation(handle_conversation)
+	process_prompt_refinement(process_prompt_refinement)
+	tool_node(tool_node)
+	generate_analysis(generate_analysis)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> classify_category;
+	classify_category -.-> handle_conversation;
+	classify_category -.-> process_prompt_refinement;
+	process_prompt_refinement -.-> generate_analysis;
+	process_prompt_refinement -.-> tool_node;
+	tool_node --> generate_analysis;
+	generate_analysis --> __end__;
+	handle_conversation --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
