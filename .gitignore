@@ -1,5 +1,5 @@
-backend/app/.venv/
-backend/app/.env
+backend/.venv/
+backend/.env
 frontend/node_modules/
 content.txt
 rules.txt
