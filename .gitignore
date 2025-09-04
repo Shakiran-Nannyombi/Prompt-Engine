@@ -3,3 +3,4 @@ backend/app/.env
 frontend/node_modules/
 content.txt
 rules.txt
+.vscode/
