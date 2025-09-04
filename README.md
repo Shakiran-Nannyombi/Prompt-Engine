@@ -69,7 +69,7 @@ It makes sure the user masters the art of **Prompt Engineering** through strictl
 </td>
 <td width="40%">
 
-<img src="diagrams/coachlight.png" alt="Coach Agent Flow" width="40%">
+<img src="diagrams/coachlight.png" alt="Coach Agent Flow" width="60%">
 
 </td>
 </tr>
@@ -81,7 +81,7 @@ It makes sure the user masters the art of **Prompt Engineering** through strictl
 <tr>
 <td width="40%">
 
-<img src="diagrams/refiner.png" alt="Refiner Agent Flow" width="70%">
+<img src="diagrams/refiner.png" alt="Refiner Agent Flow" width="90%">
 
 </td>
 <td width="60%">
