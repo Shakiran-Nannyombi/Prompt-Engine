@@ -76,59 +76,59 @@ def handle_conversation(state: RefinerState) -> dict:
     if category == "greeting":
         response_content = """👋 **Hey there! Welcome to your personal Prompt Transformation Studio!**
 
-I'm absolutely thrilled you're here! Think of me as your creative partner who takes "meh" prompts and turns them into absolute powerhouses that get incredible results from AI models. ✨
+I'm absolutely thrilled you're here! Think of me as your creative partner who takes "meh" prompts and turns them into absolute powerhouses that get incredible results from AI models. 
 
 **Here's how we'll work our magic together:**
-🎯 **Just drop me any prompt** - literally anything you want to improve!
-🔍 **I'll work my detective skills** to figure out exactly what you're after
-🚀 **You'll get back a supercharged version** with all the improvements clearly explained
+- **Just drop me any prompt** - literally anything you want to improve!
+- **I'll work my detective skills** to figure out exactly what you're after
+- **You'll get back a supercharged version** with all the improvements clearly explained
 
 **Check out these amazing transformations:**
-• "Write a blog post" → **Boom!** Detailed content strategy with engaging structure and target audience focus
-• "Create a marketing plan" → **Pow!** Comprehensive strategy with specific deliverables, timelines, and measurable goals  
-• "Help me code" → **Zap!** Targeted coding assistance with context, requirements, and step-by-step guidance
+- "Write a blog post" → **Boom!** Detailed content strategy with engaging structure and target audience focus
+- "Create a marketing plan" → **Pow!** Comprehensive strategy with specific deliverables, timelines, and measurable goals
+- "Help me code" → **Zap!** Targeted coding assistance with context, requirements, and step-by-step guidance
 
-**Ready to see some prompt magic happen?** Just paste any prompt you'd like me to transform - I can't wait to show you what we can create together! 🎨"""
+**Ready to see some prompt magic happen?** Just paste any prompt you'd like me to transform - I can't wait to show you what we can create together!"""
 
     elif category == "help_request":
-        response_content = """**Ooh, you want to see behind the curtain! I love that! 🎭**
+        response_content = """**Ooh, you want to see behind the curtain! I love that!**
 
 I'm like a Swiss Army knife of prompt engineering - I've got all these amazing frameworks in my toolkit, and I pick the perfect one for your specific needs:
 
-**🌟 For Making Things Crystal Clear:**
-• **C.O.R.E.** (Context, Objective, Role, Example) - Perfect for when you need structure!
-• **R.A.C.E.** (Role, Action, Context, Expectation) - Great for action-oriented prompts
-• **C.A.R.** (Context, Action, Result) - Simple but powerful for direct requests
+**For Making Things Crystal Clear:**
+- **C.O.R.E.** (Context, Objective, Role, Example) - Perfect for when you need structure!
+- **R.A.C.E.** (Role, Action, Context, Expectation) - Great for action-oriented prompts
+- **C.A.R.** (Context, Action, Result) - Simple but powerful for direct requests
 
-**🎯 For Laser-Sharp Precision:**
-• **RISEN** (Role, Instructions, Steps, End goal, Narrowing) - When you need detailed, step-by-step magic
-• **Advanced structuring** with all the bells and whistles for complex requirements
+**For Laser-Sharp Precision:**
+- **RISEN** (Role, Instructions, Steps, End goal, Narrowing) - When you need detailed, step-by-step magic
+- **Advanced structuring** with all the bells and whistles for complex requirements
 
-**🚀 For Creative Brilliance:**
-• **IDEA** (Inspire, Define, Explore, Act) - Perfect for brainstorming and innovation
-• **Creative enhancement** techniques that spark imagination and get those creative juices flowing
+**For Creative Brilliance:**
+- **IDEA** (Inspire, Define, Explore, Act) - Perfect for brainstorming and innovation
+- **Creative enhancement** techniques that spark imagination and get those creative juices flowing
 
 **Here's what makes me so excited to work with you:**
-✨ You'll get a dramatically improved prompt that actually works
-🔍 I'll explain exactly what I changed and why (no mystery black box here!)
-🎯 You'll walk away with a ready-to-use masterpiece that gets incredible AI responses
+- You'll get a dramatically improved prompt that actually works
+- I'll explain exactly what I changed and why (no mystery black box here!)
+- You'll walk away with a ready-to-use masterpiece that gets incredible AI responses
 
-**Want to see this magic in action?** Just drop any prompt on me - even the most basic one - and watch me transform it into something spectacular! 🪄"""
+**Want to see this magic in action?** Just drop any prompt on me - even the most basic one - and watch me transform it into something spectacular!"""
 
     else:
-        response_content = """Hey there! 👋 I'm your friendly prompt transformation specialist, and I'm here to turn your ideas into prompt gold! ✨
+        response_content = """Hey there! 👋 I'm your friendly prompt transformation specialist, and I'm here to turn your ideas into prompt gold!
 
 Whatever you've got brewing in your mind - a simple request, a complex project, or even just a rough idea - I'm here to help you polish it into something that gets absolutely amazing results from AI models.
 
 **I love working on all kinds of prompts:**
-🖊️ "Write an email" → Let's make it compelling and effective!
-📚 "Create a lesson plan" → We'll make it engaging and comprehensive!
-💡 "Help me brainstorm ideas" → Perfect! I'll structure it for maximum creativity!
-💻 "Generate code for..." → Let's get specific and build something awesome!
+- "Write an email" → Let's make it compelling and effective!
+- "Create a lesson plan" → We'll make it engaging and comprehensive!
+- "Help me brainstorm ideas" → Perfect! I'll structure it for maximum creativity!
+- "Generate code for..." → Let's get specific and build something awesome!
 
 **Here's the deal:** Just paste whatever prompt you have - even if it feels rough or incomplete. I'll work my magic and show you exactly how to make it shine! 
 
-Ready to see what we can create together? 🚀"""
+Ready to see what we can create together? """
     
     return {"messages": [AIMessage(content=response_content)]}
 
@@ -243,14 +243,11 @@ def route_after_classification(state: RefinerState):
     category = state["prompt_category"]
     if category in ["greeting", "help_request"]:
         return "handle_conversation"
-    elif category == "rag_query":
-        return "rag_agent"
     else:
         return "refinement_agent"
 
 builder.add_conditional_edges("classify_category", route_after_classification, {
     "handle_conversation": "handle_conversation",
-    "rag_agent": "rag_agent",
     "refinement_agent": "refinement_agent"
 })
 builder.add_edge("handle_conversation", END)
@@ -265,7 +262,7 @@ def route_after_rag(state: RefinerState):
     # Check if the last message has tool calls that need to be executed
     if state["messages"] and hasattr(state["messages"][-1], 'tool_calls') and state["messages"][-1].tool_calls:
         return "tool_node"
-    return "generate_analysis"
+    return "refinement_agent"
 
 builder.add_conditional_edges("refinement_agent", route_after_refinement, {
     "tool_node": "tool_node", 
@@ -274,7 +271,7 @@ builder.add_conditional_edges("refinement_agent", route_after_refinement, {
 
 builder.add_conditional_edges("rag_agent", route_after_rag, {
     "tool_node": "tool_node", 
-    "generate_analysis": "generate_analysis"
+    "refinement_agent": "refinement_agent"
 })
 
 builder.add_edge("tool_node", "generate_analysis")
