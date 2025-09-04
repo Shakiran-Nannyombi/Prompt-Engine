@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from typing  import List
+from typing import List
 
-# model for api response to frontend
+# Model for API response to frontend
 class CoachingResponse(BaseModel):
-    agent_output:str
-    refined_prompt: str = None
+    agent_output: str
+    refined_prompt: List[str] = None
     conversation_history: List[dict]
