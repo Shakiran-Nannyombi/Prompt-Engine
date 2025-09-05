@@ -19,11 +19,6 @@ const router = createRouter({
       name: 'refiner',
       component: () => import('../views/RefinerView.vue'),
     },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
-    },
   ],
 })
 

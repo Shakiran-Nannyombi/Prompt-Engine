@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { refinerAPI, extractMessages, getLatestMessage, getRefinedPrompt,getPromptCategory,getFrameworkUsed,getRefinementAnalysis} from '@/service/api';
+import { refinerAPI, extractMessages, getLatestMessage, getRefinedPrompt, getPromptCategory, getFrameworkUsed, getRefinementAnalysis } from '@/service/api';
 
 export const useRefinerStore = defineStore('refiner', {
   state: () => ({
@@ -89,7 +89,8 @@ export const useRefinerStore = defineStore('refiner', {
         // Role mapping for conversation history
         if (conversationHistory.length > 0) {
           this.messages = conversationHistory.map(msg => ({
-            role: msg.role === 'user' ? 'human' : 'assistant', 
+            role: msg.role === 'user' ? 'human' : 'assistant',
+            content: msg.content,
             timestamp: msg.timestamp || new Date().toISOString()
           }));
         }
