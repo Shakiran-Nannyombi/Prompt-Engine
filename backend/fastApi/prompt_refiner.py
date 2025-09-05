@@ -94,3 +94,5 @@ async def create_new_refiner_thread() -> Dict[str, str]:
     except Exception as e:
         print(f"Error creating refiner thread: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+
