@@ -27,3 +27,43 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (^20.19.0 || >=22.12.0)
+- npm or yarn package manager
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd Prompt-Engine/frontend
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**
+
+   ```bash
+   npm run build
+   ```
+
+5. **Preview production build**
+
+   ```bash
+   npm run preview
+   ```
