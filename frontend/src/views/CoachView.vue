@@ -1,7 +1,7 @@
 <template>
-  <CoachChatInterface />
+  <ChatInterface />
 </template>
 
 <script setup>
-import CoachChatInterface from '@/components/chat/CoachChatInterface.vue'
+import ChatInterface from '@/components/chat/ChatInterface.vue'
 </script>

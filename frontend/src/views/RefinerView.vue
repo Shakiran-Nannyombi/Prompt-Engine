@@ -1,7 +1,7 @@
 <template>
-  <RefinerChatInterface />
+  <ChatInterface />
 </template>
 
 <script setup>
-import RefinerChatInterface from '@/components/chat/RefinerChatInterface.vue'
+import ChatInterface from '@/components/chat/ChatInterface.vue'
 </script>
