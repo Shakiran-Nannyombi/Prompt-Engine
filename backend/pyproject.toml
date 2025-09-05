@@ -40,4 +40,5 @@ dependencies = [
     "pandas>=2.0.0",
     "tqdm>=4.65.0",
     "pyppeteer>=0.0.25",
+    "uvicorn[standard]>=0.35.0",
 ]
