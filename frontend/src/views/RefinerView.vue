@@ -3,5 +3,5 @@
 </template>
 
 <script setup>
-import RefinerChatInterface from '@/components/RefinerChatInterface.vue'
+import RefinerChatInterface from '@/components/chat/RefinerChatInterface.vue'
 </script>

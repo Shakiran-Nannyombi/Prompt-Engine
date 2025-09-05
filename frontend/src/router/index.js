@@ -12,13 +12,33 @@ const router = createRouter({
     {
       path: '/coaching',
       name: 'coaching',
-      component: () => import('../views/CoachingView.vue'),
+      component: () => import('../views/CoachView.vue'),
     },
     {
       path: '/refiner',
       name: 'refiner',
       component: () => import('../views/RefinerView.vue'),
     },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/DocsView.vue'),
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'),
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/tutorials',
+      name: 'tutorials',
+      component: () => import('../views/TutorialsView.vue')
+    }
   ],
 })
 
