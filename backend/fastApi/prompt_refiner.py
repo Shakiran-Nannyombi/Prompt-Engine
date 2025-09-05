@@ -8,7 +8,7 @@ from typing import Dict
 
 router = APIRouter()
 
-@router.post("/refine", response_model=RefinerResponse)
+@router.post("/refine_chat", response_model=RefinerResponse)
 async def refine_prompt(request: RefinerRequest):
     try:
         # Validating user input
@@ -85,7 +85,7 @@ async def refine_prompt(request: RefinerRequest):
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-@router.post("/new-thread")
+@router.post("/threads")
 async def create_new_refiner_thread() -> Dict[str, str]:
     """Creating a new conversation thread ID for refiner"""
     try:
@@ -94,3 +94,5 @@ async def create_new_refiner_thread() -> Dict[str, str]:
     except Exception as e:
         print(f"Error creating refiner thread: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+
