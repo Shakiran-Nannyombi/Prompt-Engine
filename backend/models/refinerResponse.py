@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
-from app.models.refine_prompt import RefinementAnalysis
+from models.refine_prompt import RefinementAnalysis
 
 # Model for refiner api response to frontend
 class RefinerResponse(BaseModel):

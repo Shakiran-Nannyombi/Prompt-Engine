@@ -7,7 +7,7 @@ from typing import Dict
 
 router = APIRouter()
 
-@router.post("/coach", response_model=CoachingResponse)
+@router.post("/chat", response_model=CoachingResponse)
 async def chat_with_coach(request: CoachingRequest):
     try:
         # Validating user input
@@ -68,7 +68,7 @@ async def chat_with_coach(request: CoachingRequest):
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-@router.post("/new-thread")
+@router.post("/threads")
 async def create_new_thread() -> Dict[str, str]:
     """Creating a new conversation thread ID"""
     try:
