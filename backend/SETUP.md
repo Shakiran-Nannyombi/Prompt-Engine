@@ -101,3 +101,9 @@ Running streamlite demo
 ```sh
 streamlit run streamlite_app.py
 ```
+
+Running the api
+
+``` sh
+uvicorn app.api.main:app --reload --host 0.0.0.0 --port 8000
+``
