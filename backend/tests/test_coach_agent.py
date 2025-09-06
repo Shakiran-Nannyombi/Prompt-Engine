@@ -1,0 +1,194 @@
+"""
+Simple pytest tests for the coach agent.
+Tests basic functionality using actual environment variables.
+"""
+import os
+import pytest
+from unittest.mock import patch, MagicMock
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Add the backend directory to Python path for imports
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Import after loading env vars
+from agents.coach_agent import (
+    coach_graph, 
+    CoachingState, 
+    start_coaching, 
+    process_task_input,
+    process_context_input,
+    process_reference_input,
+    process_final_prompt,
+    extract_message_content
+)
+
+
+class TestCoachAgent:
+    """Test class for coach agent functionality."""
+    
+    @pytest.fixture(autouse=True)
+    def setup_method(self):
+        """Setup method that runs before each test."""
+        # Mock environment variables for testing
+        os.environ["GROQ_API_KEY"] = "test_groq_key"
+        os.environ["COACH_LANGSMITH_API_KEY"] = "test_coach_langsmith_key"
+        os.environ["COACH_LANGSMITH_PROJECT"] = "test_coach_project"
+        os.environ["TAVILY_API_KEY"] = "test_tavily_key"
+        os.environ["DATABASE_URL"] = "postgresql://test:test@localhost:5432/test_db"
+    
+    def test_environment_variables_loaded(self):
+        """Test that all required environment variables are loaded."""
+        assert os.environ.get("GROQ_API_KEY") is not None
+        assert os.environ.get("COACH_LANGSMITH_API_KEY") is not None
+        assert os.environ.get("COACH_LANGSMITH_PROJECT") is not None
+        assert os.environ.get("TAVILY_API_KEY") is not None
+        assert os.environ.get("DATABASE_URL") is not None
+    
+    def test_coach_graph_initialization(self):
+        """Test that the coach graph initializes without errors."""
+        assert coach_graph is not None
+        assert hasattr(coach_graph, 'get_graph')
+    
+    def test_start_coaching_node(self):
+        """Test the start_coaching node functionality."""
+        initial_state = {
+            "messages": [],
+            "current_step": "initial",
+            "task": "",
+            "context": "",
+            "references": [],
+            "final_prompt": "",
+            "task_corrected": "",
+            "context_corrected": "",
+            "references_corrected": [],
+            "final_prompt_corrected": ""
+        }
+        
+        result = start_coaching(initial_state)
+        
+        assert "messages" in result
+        assert len(result["messages"]) > 0
+        assert result["current_step"] == "awaiting_task_input"
+    
+    def test_process_task_input_with_greeting(self):
+        """Test process_task_input with a greeting message."""
+        from langchain_core.messages import HumanMessage
+        
+        state = {
+            "messages": [HumanMessage(content="Hello!")],
+            "current_step": "awaiting_task_input",
+            "task": "",
+            "context": "",
+            "references": [],
+            "final_prompt": "",
+            "task_corrected": "",
+            "context_corrected": "",
+            "references_corrected": [],
+            "final_prompt_corrected": ""
+        }
+        
+        result = process_task_input(state)
+        
+        # For short greetings, it should return a greeting response
+        assert "messages" in result
+        assert result["current_step"] == "awaiting_task_input"
+    
+    def test_process_task_input_with_task(self):
+        """Test process_task_input with an actual task."""
+        from langchain_core.messages import HumanMessage
+        
+        state = {
+            "messages": [HumanMessage(content="I want to write a prompt for generating marketing copy")],
+            "current_step": "awaiting_task_input",
+            "task": "",
+            "context": "",
+            "references": [],
+            "final_prompt": "",
+            "task_corrected": "",
+            "context_corrected": "",
+            "references_corrected": [],
+            "final_prompt_corrected": ""
+        }
+        
+        result = process_task_input(state)
+        
+        assert "task_corrected" in result
+        assert result["current_step"] == "evaluating_task"
+    
+    def test_extract_message_content(self):
+        """Test the extract_message_content helper function."""
+        from langchain_core.messages import HumanMessage, AIMessage
+        
+        # Test with a single message
+        message = HumanMessage(content="Hello")
+        result = extract_message_content(message)
+        
+        assert isinstance(result, tuple)
+        assert len(result) == 2
+        assert result[0] == "user"
+        assert result[1] == "Hello"
+    
+    @patch('agents.coach_agent.llm')
+    def test_grammar_correction_integration(self, mock_llm):
+        """Test that grammar correction is integrated into the workflow."""
+        from langchain_core.messages import HumanMessage
+        
+        # Mock the LLM response for grammar correction
+        mock_response = MagicMock()
+        mock_response.content = "I want to write a prompt for generating marketing copy."
+        mock_llm.invoke.return_value = mock_response
+        
+        state = {
+            "messages": [HumanMessage(content="i want to write a prompt for generating marketing copy")],
+            "current_step": "awaiting_task_input",
+            "task": "",
+            "context": "",
+            "references": [],
+            "final_prompt": "",
+            "task_corrected": "",
+            "context_corrected": "",
+            "references_corrected": [],
+            "final_prompt_corrected": ""
+        }
+        
+        result = process_task_input(state)
+        
+        # Verify that grammar correction was attempted
+        assert "task_corrected" in result
+        assert result["current_step"] == "evaluating_task"
+        mock_llm.invoke.assert_called()
+    
+    def test_coaching_state_structure(self):
+        """Test that CoachingState has the expected structure."""
+        state = CoachingState(
+            task="test task",
+            context="test context", 
+            references=["ref1", "ref2"],
+            evaluation_criteria="test criteria",
+            final_prompt="test prompt",
+            messages=[],
+            current_step="test_step",
+            evaluation_result=None,
+            summary="test summary",
+            task_corrected="corrected task",
+            context_corrected="corrected context",
+            references_corrected=["corrected ref1", "corrected ref2"],
+            final_prompt_corrected="corrected prompt"
+        )
+        
+        assert state["task"] == "test task"
+        assert state["context"] == "test context"
+        assert state["references"] == ["ref1", "ref2"]
+        assert state["task_corrected"] == "corrected task"
+        assert state["context_corrected"] == "corrected context"
+        assert state["references_corrected"] == ["corrected ref1", "corrected ref2"]
+        assert state["final_prompt_corrected"] == "corrected prompt"
+
+
+if __name__ == "__main__":
+    pytest.main([__file__])
