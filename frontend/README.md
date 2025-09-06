@@ -56,7 +56,7 @@ frontend/
 - **Axios**: HTTP client for API communication
 - **PostCSS**: CSS post-processor with Autoprefixer
 
-## 📄 License
+## License
 
 This project is part of the Prompt Engine platform. See the main project LICENSE file for details.
 
@@ -69,5 +69,3 @@ This project is part of the Prompt Engine platform. See the main project LICENSE
 5. Test across different screen sizes and themes
 
 ---
-
-**Built with ❤️ using Vue 3, Tailwind CSS, and modern web technologies.**
