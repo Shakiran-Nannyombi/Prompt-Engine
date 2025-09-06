@@ -2,14 +2,6 @@
   <BaseCard variant="elevated" class="max-w-md mx-auto">
     <template #header>
       <div class="text-center">
-        <div class="flex items-center justify-center space-x-2 mb-4">
-          <img 
-            src="/PE_logo.svg" 
-            alt="Prompt Engine" 
-            class="w-8 h-8"
-          />
-          <span class="text-xl font-bold text-text">Prompt Engine</span>
-        </div>
         <h2 class="text-2xl font-bold text-text mb-2">Create Account</h2>
         <p class="text-text opacity-70">Join Prompt Engine to get started</p>
       </div>
@@ -61,6 +53,9 @@
         :required="true"
         :disabled="isLoading"
       />
+
+      <!-- Spacing after password fields -->
+      <div class="py-2"></div>
 
       <!-- Password Strength Indicator -->
       <div v-if="form.password" class="space-y-2">
@@ -121,14 +116,12 @@
         </label>
       </div>
 
+      <!-- Spacing -->
+      <div class="py-4"></div>
+
       <!-- Divider -->
-      <div class="relative">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-input-border"></div>
-        </div>
-        <div class="relative flex justify-center text-sm">
-          <span class="px-2 bg-card-bg text-text opacity-70">Or continue with</span>
-        </div>
+      <div class="flex items-center justify-center py-2">
+        <span class="text-sm text-text opacity-70">Or continue with</span>
       </div>
 
       <!-- Google Login Button -->
@@ -139,7 +132,7 @@
         :disabled="isLoading"
         fullWidth
         @click="$emit('google-login')"
-        class="google-button"
+        class="google-button no-outline"
       >
         <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -158,6 +151,7 @@
         :disabled="!isFormValid"
         fullWidth
         htmlType="submit"
+        class="create-account-btn"
       >
         {{ isLoading ? 'Creating Account...' : 'Create Account' }}
       </BaseButton>
@@ -192,7 +186,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { BaseCard, BaseInput, BaseButton } from '@/components/base'
 
 const props = defineProps({
@@ -292,39 +286,69 @@ const passwordStrengthText = computed(() => {
 
 // Form validation
 const isFormValid = computed(() => {
-  return form.name && 
-         form.email && 
-         form.password && 
-         form.confirmPassword &&
-         form.acceptTerms &&
-         !errors.name && 
-         !errors.email && 
-         !errors.password && 
-         !errors.confirmPassword
+  // Check if all fields are filled
+  const allFieldsFilled = form.name.trim() && 
+                         form.email.trim() && 
+                         form.password && 
+                         form.confirmPassword &&
+                         form.acceptTerms
+  
+  // Check if password meets strength requirements (at least 3/4 strength)
+  const passwordStrongEnough = passwordStrength.value >= 3
+  
+  // Check if passwords match
+  const passwordsMatch = form.password === form.confirmPassword
+  
+  // Check if no validation errors
+  const noErrors = !errors.name && 
+                   !errors.email && 
+                   !errors.password && 
+                   !errors.confirmPassword
+  
+  return allFieldsFilled && passwordStrongEnough && passwordsMatch && noErrors
 })
+
+// Real-time validation
+const validateField = (fieldName, value) => {
+  switch (fieldName) {
+    case 'name':
+      errors.name = validateName(value)
+      break
+    case 'email':
+      errors.email = validateEmail(value)
+      break
+    case 'password':
+      errors.password = validatePassword(value)
+      // Also re-validate confirm password if it exists
+      if (form.confirmPassword) {
+        errors.confirmPassword = validateConfirmPassword(form.confirmPassword)
+      }
+      break
+    case 'confirmPassword':
+      errors.confirmPassword = validateConfirmPassword(value)
+      break
+  }
+}
 
 // Handle form submission
 const handleSubmit = () => {
-  // Clear previous errors
-  errors.name = ''
-  errors.email = ''
-  errors.password = ''
-  errors.confirmPassword = ''
-  
-  // Validate form
-  errors.name = validateName(form.name)
-  errors.email = validateEmail(form.email)
-  errors.password = validatePassword(form.password)
-  errors.confirmPassword = validateConfirmPassword(form.confirmPassword)
+  // Validate all fields
+  validateField('name', form.name)
+  validateField('email', form.email)
+  validateField('password', form.password)
+  validateField('confirmPassword', form.confirmPassword)
   
   // If form is valid, emit submit event
   if (isFormValid.value) {
     emit('submit', {
-      name: form.name,
-      email: form.email,
+      name: form.name.trim(),
+      email: form.email.trim(),
       password: form.password,
       acceptNewsletter: form.acceptNewsletter
     })
+  } else {
+    // Show error message if form is not valid
+    console.log('Form validation failed. Please check all fields.')
   }
 }
 
@@ -342,8 +366,70 @@ const clearForm = () => {
   errors.confirmPassword = ''
 }
 
+// Watch for changes and validate in real-time
+watch(() => form.name, (newValue) => {
+  if (newValue) validateField('name', newValue)
+})
+
+watch(() => form.email, (newValue) => {
+  if (newValue) validateField('email', newValue)
+})
+
+watch(() => form.password, (newValue) => {
+  if (newValue) validateField('password', newValue)
+})
+
+watch(() => form.confirmPassword, (newValue) => {
+  if (newValue) validateField('confirmPassword', newValue)
+})
+
 // Expose methods for parent components
 defineExpose({
   clearForm
 })
 </script>
+
+<style scoped>
+.no-outline {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.no-outline:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.no-outline:hover {
+  border: none !important;
+  outline: none !important;
+}
+
+.create-account-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+}
+
+.create-account-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+}
+
+.create-account-btn:active:not(:disabled) {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4) !important;
+}
+
+.create-account-btn:disabled {
+  background: #9ca3af !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+</style>

@@ -51,10 +51,6 @@
       <!-- Right Side - Form -->
       <div class="form-section">
         <div class="form-container">
-          <div class="form-header">
-            <h2 class="form-title">Welcome Back</h2>
-            <p class="form-subtitle">Sign in to continue your journey</p>
-          </div>
           <LoginForm
             :isLoading="isLoading"
             :error="error"
@@ -271,11 +267,12 @@ const handleForgotPassword = () => {
 .form-section {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 2rem;
   background: var(--color-background);
   position: relative;
+  overflow-y: auto;
 }
 
 .form-section::before {
@@ -291,28 +288,11 @@ const handleForgotPassword = () => {
 
 .form-container {
   width: 100%;
-  max-width: 28rem;
+  max-width: 32rem;
   position: relative;
   z-index: 2;
 }
 
-.form-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.form-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: 0.5rem;
-}
-
-.form-subtitle {
-  font-size: 1rem;
-  color: var(--color-text);
-  opacity: 0.7;
-}
 
 /* Responsive design */
 @media (max-width: 1024px) {
@@ -349,12 +329,9 @@ const handleForgotPassword = () => {
   }
   
   .form-section {
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
   }
   
-  .form-title {
-    font-size: 1.75rem;
-  }
 }
 
 @media (max-width: 768px) {
@@ -370,7 +347,7 @@ const handleForgotPassword = () => {
   
   .form-section,
   .logo-section {
-    padding: 1.5rem 1rem;
+    padding: 1rem;
   }
   
   .logo-image {
@@ -401,13 +378,6 @@ const handleForgotPassword = () => {
     height: 20px;
   }
   
-  .form-title {
-    font-size: 1.5rem;
-  }
-  
-  .form-subtitle {
-    font-size: 0.875rem;
-  }
 }
 
 @media (max-width: 480px) {

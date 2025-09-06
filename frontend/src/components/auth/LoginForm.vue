@@ -2,14 +2,6 @@
   <BaseCard variant="elevated" class="max-w-md mx-auto">
     <template #header>
       <div class="text-center">
-        <div class="flex items-center justify-center space-x-2 mb-4">
-          <img 
-            src="/PE_logo.svg" 
-            alt="Prompt Engine" 
-            class="w-8 h-8"
-          />
-          <span class="text-xl font-bold text-text">Prompt Engine</span>
-        </div>
         <h2 class="text-2xl font-bold text-text mb-2">Welcome Back</h2>
         <p class="text-text opacity-70">Sign in to your account to continue</p>
       </div>
@@ -61,13 +53,8 @@
       </div>
 
       <!-- Divider -->
-      <div class="relative">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-input-border"></div>
-        </div>
-        <div class="relative flex justify-center text-sm">
-          <span class="px-2 bg-card-bg text-text opacity-70">Or continue with</span>
-        </div>
+      <div class="flex items-center justify-center py-2">
+        <span class="text-sm text-text opacity-70">Or continue with</span>
       </div>
 
       <!-- Google Login Button -->
@@ -78,7 +65,7 @@
         :disabled="isLoading"
         fullWidth
         @click="$emit('google-login')"
-        class="google-button"
+        class="google-button no-outline"
       >
         <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -131,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { BaseCard, BaseInput, BaseButton } from '@/components/base'
 
 const props = defineProps({
@@ -176,29 +163,43 @@ const validatePassword = (password) => {
 
 // Form validation
 const isFormValid = computed(() => {
-  return form.email && 
-         form.password && 
-         !errors.email && 
-         !errors.password
+  // Check if all fields are filled
+  const allFieldsFilled = form.email.trim() && form.password
+  
+  // Check if no validation errors
+  const noErrors = !errors.email && !errors.password
+  
+  return allFieldsFilled && noErrors
 })
+
+// Real-time validation
+const validateField = (fieldName, value) => {
+  switch (fieldName) {
+    case 'email':
+      errors.email = validateEmail(value)
+      break
+    case 'password':
+      errors.password = validatePassword(value)
+      break
+  }
+}
 
 // Handle form submission
 const handleSubmit = () => {
-  // Clear previous errors
-  errors.email = ''
-  errors.password = ''
-  
-  // Validate form
-  errors.email = validateEmail(form.email)
-  errors.password = validatePassword(form.password)
+  // Validate all fields
+  validateField('email', form.email)
+  validateField('password', form.password)
   
   // If form is valid, emit submit event
   if (isFormValid.value) {
     emit('submit', {
-      email: form.email,
+      email: form.email.trim(),
       password: form.password,
       rememberMe: form.rememberMe
     })
+  } else {
+    // Show error message if form is not valid
+    console.log('Form validation failed. Please check all fields.')
   }
 }
 
@@ -211,8 +212,36 @@ const clearForm = () => {
   errors.password = ''
 }
 
+// Watch for changes and validate in real-time
+watch(() => form.email, (newValue) => {
+  if (newValue) validateField('email', newValue)
+})
+
+watch(() => form.password, (newValue) => {
+  if (newValue) validateField('password', newValue)
+})
+
 // Expose methods for parent components
 defineExpose({
   clearForm
 })
 </script>
+
+<style scoped>
+.no-outline {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.no-outline:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.no-outline:hover {
+  border: none !important;
+  outline: none !important;
+}
+</style>
