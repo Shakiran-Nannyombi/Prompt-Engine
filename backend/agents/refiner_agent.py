@@ -158,7 +158,9 @@ def process_prompt_refinement(state: RefinerState) -> dict:
     if has_document and os.path.exists("./chroma_db"):
         selected_tools = selected_tools + rag_tool_list
 
-    llm_with_selected_tools = llm.bind_tools(tools=selected_tools, parallel_tool_calls=False)
+    # Ensure we always have access to all tools in the tool node
+    # The LLM will only call tools it's bound with, but the tool node needs all tools
+    llm_with_selected_tools = llm.bind_tools(tools=selected_tools)
 
     if has_document:
         system_prompt = f"""You are a prompt refinement expert helping users create better, more effective prompts.

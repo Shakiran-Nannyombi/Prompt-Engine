@@ -44,13 +44,20 @@ def process_uploaded_document(uploaded_file):
     try:
         text_content = extract_text_from_uploaded_file(uploaded_file)
         if text_content and len(text_content.strip()) > 10:
-            # Storing the document content in session state for the agent to reference
+            # Process the document through the refiner agent's file processor
+            from agents.tools.refinement_tools import process_uploaded_file
+            
+            # Call the file processor tool to store in vector database
+            result = process_uploaded_file(text_content, uploaded_file.name)
+            
+            # Also store in session state for reference
             if "uploaded_documents" not in st.session_state:
                 st.session_state.uploaded_documents = {}
             
             st.session_state.uploaded_documents[uploaded_file.name] = text_content
-            st.success(f"Document '{uploaded_file.name}' uploaded successfully!")
+            st.success(f"Document '{uploaded_file.name}' uploaded and processed successfully!")
             st.info(f"**{uploaded_file.name}** is now available for the agent to reference.")
+            st.info(f"Processing result: {result}")
             # Set the flag in session state
             st.session_state.processed_filename = uploaded_file.name
         else:
