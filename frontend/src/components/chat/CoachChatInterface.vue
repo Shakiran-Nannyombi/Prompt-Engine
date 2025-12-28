@@ -272,13 +272,9 @@
   
         <!-- Chat Input -->
         <div class="chat-input border-t border-card-border bg-card-bg">
-          <ChatInput
+          <UnifiedChatInput
             :disabled="isLoading"
-            placeholder="Type your response here..."
-            :showStopButton="showStopButton"
-            variant="coach"
             @send-message="handleSendMessage"
-            @stop-generation="handleStopGeneration"
           />
         </div>
   
@@ -308,7 +304,7 @@
   <script setup>
   import { ref, computed, onMounted } from 'vue'
   import ChatMessageList from './ChatMessageList.vue'
-  import ChatInput from './ChatInput.vue'
+  import UnifiedChatInput from './UnifiedChatInput.vue'
   
   const props = defineProps({
     messages: {

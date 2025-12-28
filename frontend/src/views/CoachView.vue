@@ -84,14 +84,20 @@ const currentStepDisplay = computed(() => {
 })
 
 // Methods
-const handleSendMessage = async (message) => {
+const handleSendMessage = async (payload) => {
   try {
+    // Extract info from payload (could be string or object)
+    const messageContent = typeof payload === 'string' ? payload : payload.message
+    const files = payload.files || []
+    const model = payload.model || 'sonnet-4.5'
+
     // Add user message to chat
     messages.value.push({
       id: Date.now(),
       sender: 'user',
-      content: message,
-      timestamp: new Date().toISOString()
+      content: messageContent,
+      timestamp: new Date().toISOString(),
+      files: files // Store files in message for potential display
     })
 
     // Set loading state
@@ -108,7 +114,7 @@ const handleSendMessage = async (message) => {
 
     // Call the real coaching API
     const response = await coachingAPI.sendMessage(
-      message,
+      messageContent,
       conversationHistory,
       currentThreadId.value
     )
