@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://prompt-engine.onrender.com";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -13,7 +13,7 @@ const apiClient = axios.create({
 export const coachingAPI = {
   sendMessage(userInput, conversationHistory = [], threadId = null) {
     return apiClient.post("/coaching/chat", {
-      user_input: userInput,              
+      user_input: userInput,
       conversation_history: conversationHistory,
       thread_id: threadId
     });
@@ -27,10 +27,10 @@ export const coachingAPI = {
 export const refinerAPI = {
   sendMessage(originalPrompt, conversationHistory = [], threadId = null, hasDocument = false) {
     return apiClient.post("/refiner/refine_chat", {
-      original_prompt: originalPrompt,    
+      original_prompt: originalPrompt,
       conversation_history: conversationHistory,
       thread_id: threadId,
-      has_document: hasDocument            
+      has_document: hasDocument
     });
   },
 

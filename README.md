@@ -1,5 +1,7 @@
 # Prompt-Engine Application
 
+[![Live Backend](https://img.shields.io/badge/Live-Backend-blue)](https://prompt-engine.onrender.com)
+
 > **Disclaimer**
 >
 > This evaluation was conducted by using ChatGPT to research prompt engineering problems on Reddit. The insights gathered helped me to define the solution this application offers clearly and refined my vision.
@@ -123,7 +125,33 @@ The Refiner Agent solves **"cargo-culting prompts"** and **"verbosity issues"** 
 
 ## Application Architecture
 
-Still in development will be updated
+The Prompt Engine is built with a modern full-stack architecture:
+
+- **Frontend:** Vue.js 3 (Vite, Tailwind CSS, GSAP)
+- **Backend:** FastAPI (Python, LangGraph, LangChain)
+- **Database:** Supabase (PostgreSQL) for persistence and checkpointing
+- **AI Models:** Llama-3.1-8b (via Groq)
+
+## Live Deployment
+
+- **Backend:** [https://prompt-engine.onrender.com](https://prompt-engine.onrender.com)
+- **Frontend:** [To be updated]
+
+## Getting Started
+
+### Backend Setup
+1. `cd backend`
+2. `uv sync`
+3. Configure `.env` (see `.env.example`)
+4. Initialize DB: `uv run python -c "from database import init_db; init_db()"`
+5. Seed Data: `uv run python seed.py`
+6. Run: `uvicorn main:app --reload`
+
+### Frontend Setup
+1. `cd frontend`
+2. `npm install`
+3. Configure `.env` with `VITE_API_URL`
+4. Run: `npm run dev`
 
 ## References
 
