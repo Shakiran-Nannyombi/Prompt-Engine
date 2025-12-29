@@ -141,16 +141,22 @@ defineExpose({
 
 <style scoped>
 .chat-interface {
-  min-height: 0; /* Important for flexbox */
+  min-height: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .chat-header {
   flex-shrink: 0;
+  background-color: var(--color-background);
+  border-color: var(--color-card-border);
 }
 
 .chat-messages {
   flex: 1;
-  min-height: 0; /* Important for flexbox */
+  min-height: 0;
+  background-color: var(--color-background);
 }
 
 .chat-input {
@@ -159,9 +165,13 @@ defineExpose({
 
 .chat-error {
   flex-shrink: 0;
+  background-color: var(--color-card-bg);
+  border-color: var(--color-primary);
 }
 
 .chat-footer {
   flex-shrink: 0;
+  background-color: var(--color-card-bg);
+  border-color: var(--color-card-border);
 }
 </style>

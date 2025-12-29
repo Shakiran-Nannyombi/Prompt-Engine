@@ -23,6 +23,14 @@
           </svg>
         </button>
 
+        <!-- Desktop Links -->
+        <div class="navbar-links hidden md:flex">
+          <RouterLink to="/" class="nav-link">Home</RouterLink>
+          <RouterLink to="/coach" class="nav-link">Coach</RouterLink>
+          <RouterLink to="/refiner" class="nav-link">Refiner</RouterLink>
+          <RouterLink to="/about" class="nav-link">Documentation</RouterLink>
+        </div>
+
         <!-- Theme Toggle and CTA Button (Desktop) -->
         <div class="navbar-actions hidden md:flex">
           <button @click="toggleTheme" class="theme-toggle" :class="{ 'dark': isDarkMode }">
@@ -603,7 +611,7 @@ onMounted(() => {
     document.documentElement.classList.remove('dark')
   }
 
-const loadScript = (src) => {
+  const loadScript = (src) => {
     return new Promise((resolve, reject) => {
       // Check if script is already loaded
       if (document.querySelector(`script[src="${src}"]`)) {
