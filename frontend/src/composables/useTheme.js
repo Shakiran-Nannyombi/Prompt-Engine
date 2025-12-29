@@ -1,8 +1,8 @@
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+
+const isDarkMode = ref(false)
 
 export function useTheme() {
-    const isDarkMode = ref(false)
-
     const toggleTheme = () => {
         isDarkMode.value = !isDarkMode.value
         applyTheme()

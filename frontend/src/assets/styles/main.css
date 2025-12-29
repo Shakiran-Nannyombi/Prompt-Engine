@@ -5,40 +5,44 @@
 
 /* CSS Custom Properties for Theme Colors */
 :root {
-  /* Light Mode Colors - Professional Clean Aesthetic */
+  /* Core Palette (Hex for reliability) */
   --color-primary: #f60968;
-  --color-secondary: #f1f5f9; /* Slate-100 */
-  --color-accent: #e2e8f0;    /* Slate-200 */
+  --color-secondary: #f1f5f9;
+  --color-accent: #94a3b8;
+  /* Slate-400 for contrast */
   --color-background: #ffffff;
-  --color-text: #0f172a;      /* Slate-900 */
-  
-  /* Light Mode Component Colors */
+  --color-text: #0f172a;
+
+  /* Component Base */
   --color-card-bg: #ffffff;
   --color-card-border: #e2e8f0;
   --color-input-bg: #f8fafc;
   --color-input-border: #cbd5e1;
+
+  /* Functional Colors */
+  --color-success: #10b981;
+  --color-error: #ef4444;
+
+  /* Secondary Component Colors */
   --color-scrollbar-track: #f8fafc;
   --color-scrollbar-thumb: #94a3b8;
   --color-selection-bg: #fde6eb;
   --color-selection-text: #800530;
-  
-  --color-success: #10b981;
-  --color-error: #ef4444;
 }
 
 /* Dark Mode Colors - Premium Obsidian Aesthetic */
 .dark {
   --color-primary: #f60968;
-  --color-secondary: #1e293b; /* Slate-800 */
-  --color-accent: #334155;    /* Slate-700 */
-  --color-background: #020617; /* Blue-950 */
-  --color-text: #f1f5f9;      /* Slate-100 */
-  
-  /* Dark Mode Component Colors */
-  --color-card-bg: #0f172a;    /* Slate-900 */
+  --color-secondary: #1e293b;
+  --color-accent: #334155;
+  --color-background: #020617;
+  --color-text: #f1f5f9;
+
+  --color-card-bg: #0f172a;
   --color-card-border: #1e293b;
   --color-input-bg: #020617;
   --color-input-border: #334155;
+
   --color-scrollbar-track: #020617;
   --color-scrollbar-thumb: #334155;
   --color-selection-bg: #4e2d5c;
@@ -51,6 +55,18 @@
   padding: 0;
   font-weight: normal;
   min-height: 100vh;
+  background-color: rgb(var(--color-background-rgb));
+  color: rgb(var(--color-text-rgb));
+}
+
+/* Base Styles */
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Smooth scrolling */
@@ -65,12 +81,12 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--color-scrollbar-track);
+  background-color: rgb(var(--color-scrollbar-track-rgb));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--color-scrollbar-thumb);
+  background-color: rgb(var(--color-scrollbar-thumb-rgb));
   border-radius: 4px;
 }
 

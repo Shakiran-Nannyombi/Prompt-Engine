@@ -617,16 +617,20 @@ builder.add_edge("display_final_result", END)
 
 # compiling the graph with memory using a persistent connection
 
-# Temporary connection for setup
-setup_conn = psycopg.connect(DB_URI)
-setup_conn.autocommit = True
-PostgresSaver(setup_conn).setup()
-setup_conn.close()
+from psycopg_pool import ConnectionPool
 
-# Persistent connection for runtime
-conn = psycopg.connect(DB_URI)
-memory = PostgresSaver(conn)
+# ... (rest of imports)
+
+# Setup PostgreSQL pool for checkpointer
+pool = ConnectionPool(conninfo=DB_URI, max_size=20, kwargs={"autocommit": True})
+
+# Initialize PostgresSaver with pool
+memory = PostgresSaver(pool)
 coach_graph = builder.compile(checkpointer=memory)
+
+# Run setup to ensure tables exist
+with pool.connection() as conn:
+    memory.setup(conn)
 
 # function for demo Streamlit app
 def extract_message_content(message) -> tuple[str, str]:

@@ -4,21 +4,21 @@
     class="chat-sidebar border-r border-card-border bg-background flex flex-col transition-all duration-300 ease-in-out fixed lg:relative h-full z-[150] lg:z-40 overflow-y-auto no-scrollbar"
     :class="[
       collapsed ? '-translate-x-full lg:translate-x-0 lg:w-20' : 'translate-x-0 w-full lg:w-80',
-      !collapsed ? 'inset-0 shadow-2xl backdrop-blur-xl' : ''
+      !collapsed ? 'inset-0 lg:inset-auto shadow-2xl lg:shadow-none backdrop-blur-xl lg:backdrop-blur-none' : ''
     ]"
   >
     <!-- Sidebar Header -->
     <div class="sidebar-header p-4 border-b border-card-border bg-gradient-to-r from-primary/5 to-accent/5">
       <div class="flex items-center" :class="collapsed ? 'justify-center flex-col gap-8' : 'justify-between mb-8'">
         <div class="flex items-center" :class="collapsed ? 'flex-col gap-6' : 'space-x-6'">
-          <div class="logo-container relative bg-white dark:bg-slate-800 rounded-full transition-all duration-300 shadow-md flex items-center justify-center overflow-hidden border border-card-border" :class="collapsed ? 'w-10 h-10' : 'w-14 h-14'">
-            <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt Engine" class="w-full h-full object-cover" />
+          <div class="logo-container relative transition-all duration-300 flex items-center justify-center overflow-hidden" :class="collapsed ? 'w-10 h-10' : 'w-14 h-14'">
+            <img src="@/assets/images/logo.svg" alt="Prompt Engine" class="w-full h-full object-contain" />
           </div>
           <div v-show="!collapsed" class="whitespace-nowrap overflow-hidden transition-all duration-300 ml-3">
-            <h2 class="text-lg font-black text-slate-900 dark:text-white tracking-tight leading-none">
+              <h2 class="text-lg font-black text-text tracking-tight leading-none">
               {{ title }}
             </h2>
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">{{ subtitle }}</p>
+            <p class="text-[10px] text-text opacity-80 font-bold uppercase tracking-widest mt-1">{{ subtitle }}</p>
           </div>
         </div>
         
@@ -40,12 +40,12 @@
       </div>
       
       <!-- Slot for dynamic header content (e.g. current step) -->
-      <slot name="header-bottom" />
+      <slot name="header-bottom"/>
     </div>
 
     <!-- Navigation Section -->
     <div class="sidebar-nav border-b border-card-border" :class="collapsed ? 'p-2' : 'p-4'">
-      <h3 class="text-[10px] font-bold text-text mb-3 opacity-50 uppercase tracking-widest" :class="collapsed ? 'text-center' : ''">
+      <h3 class="text-[10px] font-bold text-text mb-3 opacity-80 uppercase tracking-widest" :class="collapsed ? 'text-center' : ''">
           Navigation
       </h3>
       <div class="space-y-1">
@@ -97,14 +97,14 @@
         <svg v-else class="w-5 h-5 text-text group-hover:rotate-12 transition-transform" :class="collapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
-        <span v-show="!collapsed" class="text-sm font-bold">Theme Mode</span>
-      </button>
+        <span v-show="!collapsed" class="text-sm font-bold text-text">Theme Mode</span>
+      </button> <br>
 
       <slot name="footer-bottom" />
 
       <div class="pt-2">
-          <p class="text-[10px] text-text opacity-40 text-center font-bold tracking-tighter" v-show="!collapsed">Prompt Engine Premium v1.0</p>
-          <p class="text-[10px] text-text opacity-40 text-center font-bold" v-show="collapsed">v1.0</p>
+          <p class="text-[10px] text-text opacity-80 text-center font-bold tracking-tighter" v-show="!collapsed">Prompt Engine Premium v1.0</p>
+          <p class="text-[10px] text-text opacity-80 text-center font-bold" v-show="collapsed">v1.0</p>
       </div>
     </div>
   </div>
@@ -112,8 +112,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import logoLight from '@/assets/images/logoLight.png'
-import logoDark from '@/assets/images/logoDark.png'
+import logo from '@/assets/images/logo.svg'
 
 const props = defineProps({
   collapsed: Boolean,

@@ -13,7 +13,60 @@
     <!-- Messages Container -->
     <div class="chat-messages flex-1 overflow-hidden relative">
       <div class="max-w-3xl mx-auto h-full w-full">
+        <!-- Empty State with Welcome Screen -->
+        <div v-if="messages.length === 0 && !isLoading" class="h-full flex items-center justify-center animate-fade-in text-center p-8">
+          <div v-if="variant === 'refiner'" class="max-w-md space-y-6">
+            <div class="w-16 h-16 mx-auto flex items-center justify-center transform hover:rotate-6 transition-transform duration-500 overflow-hidden">
+               <img src="@/assets/images/logo.svg" alt="Prompt Engine" class="w-full h-full object-contain" />
+            </div>
+            
+            <div class="inline-block px-4 py-1.5 rounded-full border border-card-border bg-card-bg/50 backdrop-blur-sm">
+              <span class="text-[10px] font-black tracking-widest uppercase text-text">AI Prompt Optimization</span>
+            </div> <br><br>
+
+            <div class="space-y-4">
+              <h2 class="text-4xl lg:text-5xl font-black text-text tracking-tighter leading-[0.9]">
+                Polish Your <br/>Prompts to Gold.
+              </h2> <br>
+              <p class="text-xs text-text opacity-70 font-bold uppercase tracking-wide leading-relaxed max-w-sm mx-auto">
+                Fine-tune, optimize, and structurally enhance your prompt templates for maximum AI performance.
+              </p>
+              <div class="pt-4 flex items-center justify-center gap-3 text-[10px] font-black text-text opacity-90 uppercase tracking-widest">
+                 <span>Structural Clarity</span>
+                 <span class="w-1 h-1 rounded-full bg-current"></span>
+                 <span>Tone Control</span>
+                 <span class="w-1 h-1 rounded-full bg-current"></span>
+                 <span>Logic Validation</span>
+              </div>
+            </div>
+
+            <div class="pt-6">
+              <button 
+                @click="$emit('start-session')"
+                class="px-8 py-4 bg-primary text-text rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-105 hover:shadow-primary/40 transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                Launch Session
+              </button>
+            </div>
+          </div>
+          
+          <!-- Default Empty State -->
+          <div v-else class="flex flex-col items-center justify-center h-full text-center">
+            <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-text opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-medium text-text mb-2">Start a conversation</h3>
+            <p class="text-text opacity-70 max-w-md">
+              {{ inputPlaceholder }}
+            </p>
+          </div>
+        </div>
+
         <ChatMessageList 
+          v-else
           :messages="messages"
           :isLoading="isLoading"
           :loadingMessage="loadingMessage"
@@ -24,7 +77,8 @@
     </div>
 
     <!-- Input Area -->
-    <div class="chat-input absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background/90 to-transparent pt-10">
+    <!-- Input Area -->
+    <div class="chat-input p-4 bg-background border-t border-card-border">
       <div class="max-w-3xl mx-auto w-full">
         <UnifiedChatInput
           :disabled="isLoading"
@@ -64,6 +118,10 @@
 import { ref, nextTick } from 'vue'
 import ChatMessageList from './ChatMessageList.vue'
 import UnifiedChatInput from './UnifiedChatInput.vue'
+import { useTheme } from '@/composables/useTheme'
+import logo from '@/assets/images/logo.svg'
+
+const { isDarkMode } = useTheme()
 
 const props = defineProps({
   messages: {

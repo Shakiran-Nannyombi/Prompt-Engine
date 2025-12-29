@@ -164,6 +164,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { BaseButton } from '@/components/base'
+import { useTheme } from '@/composables/useTheme'
 
 // Mock authentication state - replace with actual Pinia store
 const isAuthenticated = ref(false)
@@ -175,7 +176,7 @@ const user = ref({
 const router = useRouter()
 const showUserMenu = ref(false)
 const showMobileMenu = ref(false)
-const isDarkMode = ref(false)
+const { isDarkMode, toggleTheme, initTheme } = useTheme()
 
 const navigationItems = [
   { name: 'Home', path: '/' },
@@ -194,12 +195,6 @@ const userInitials = computed(() => {
     .toUpperCase()
     .slice(0, 2)
 })
-
-const toggleTheme = () => {
-  isDarkMode.value = !isDarkMode.value
-  document.documentElement.classList.toggle('dark', isDarkMode.value)
-  localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light')
-}
 
 const toggleUserMenu = () => {
   showUserMenu.value = !showUserMenu.value
@@ -232,18 +227,9 @@ const handleClickOutside = (event) => {
   }
 }
 
-// Initialize theme from localStorage
+// Initialize from localStorage and setup events
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme) {
-    isDarkMode.value = savedTheme === 'dark'
-    document.documentElement.classList.toggle('dark', isDarkMode.value)
-  } else {
-    // Default to system preference
-    isDarkMode.value = window.matchMedia('(prefers-color-scheme: dark)').matches
-    document.documentElement.classList.toggle('dark', isDarkMode.value)
-  }
-  
+  initTheme()
   document.addEventListener('click', handleClickOutside)
 })
 

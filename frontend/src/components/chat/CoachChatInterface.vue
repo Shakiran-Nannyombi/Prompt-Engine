@@ -45,16 +45,16 @@
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center space-x-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap text-primary opacity-70"><path d="M4 14.5 14 3l-2.5 9h8.5L10 21l2.5-9z"/></svg>
-              <h3 class="text-[10px] font-black text-slate-800 dark:text-slate-200 opacity-60 uppercase tracking-widest">Efficiency</h3>
+              <h3 class="text-[10px] font-black text-text opacity-80 uppercase tracking-widest">Efficiency</h3>
             </div>
             <span class="text-[10px] font-black text-primary">{{ Math.round(progressInfo.progressPercentage) }}%</span>
-          </div>
-          <div class="w-full bg-secondary rounded-full h-1.5 mb-4 overflow-hidden">
+          </div> <br>
+          <div class="w-full bg-secondary/50 dark:bg-accent/20 rounded-full h-1.5 mb-4 overflow-hidden border border-card-border/30">
             <div 
               class="main-progress-bar h-full rounded-full transition-all duration-1000 ease-out"
               :style="{ width: `${progressInfo.progressPercentage}%` }"
             ></div>
-          </div>
+          </div> <br>
           
           <!-- Step Indicators -->
           <div class="grid grid-cols-4 gap-2">
@@ -75,21 +75,14 @@
           </div>
         </div>
 
-        <!-- Captured Details -->
+        <!-- Pro Tip -->
         <div class="p-4 border-b border-card-border">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center space-x-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb text-primary opacity-70"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
-              <h3 class="text-[10px] font-black text-slate-800 dark:text-slate-200 opacity-60 uppercase tracking-widest">Insights</h3>
+          <div class="bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl p-5 border border-primary/10">
+            <div class="flex items-center space-x-2 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles text-primary"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+              <h3 class="text-[10px] font-black text-primary uppercase tracking-widest">Pro Tip</h3>
             </div>
-          </div>
-          <div class="space-y-4">
-            <div v-for="field in ['task', 'context']" :key="field" class="group">
-              <div class="text-[10px] font-bold text-text opacity-40 uppercase mb-1.5 transition-opacity group-hover:opacity-70">{{ field }}</div>
-              <div class="text-xs text-text bg-secondary/50 border border-card-border/50 rounded-xl p-3 leading-relaxed min-h-[40px] max-h-24 overflow-y-auto no-scrollbar font-medium">
-                {{ progressInfo[field] || 'Awating input...' }}
-              </div>
-            </div>
+            <p class="text-[11px] text-text opacity-70 leading-relaxed font-medium">Use the Coach to define clear personas and constraints. This ensures the output matches your exact requirements.</p>
           </div>
         </div>
       </div>
@@ -128,7 +121,7 @@
             </div>
             <div>
               <h1 class="text-xl font-black text-text tracking-tight">Coach Interface</h1>
-              <p class="text-xs text-text opacity-50 font-bold uppercase tracking-widest">Active Intelligence Session</p>
+              <p class="text-xs text-text opacity-70 font-bold uppercase tracking-widest">Active Intelligence Session</p>
             </div>
           </div>
           
@@ -174,23 +167,22 @@
           <!-- Welcome Screen -->
           <div v-else class="h-full flex items-center justify-center animate-fade-in text-center p-8">
             <div class="max-w-md space-y-6">
-              <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-3xl mx-auto shadow-xl flex items-center justify-center transform hover:rotate-6 transition-transform duration-500 border border-card-border overflow-hidden">
-                 <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt Engine" class="w-full h-full object-cover" />
+              <div class="w-16 h-16 mx-auto flex items-center justify-center transform hover:rotate-6 transition-transform duration-500 overflow-hidden">
+                 <img src="@/assets/images/logo.svg" alt="Prompt Engine" class="w-full h-full object-contain" />
               </div>
               
-              <div class="inline-block px-4 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-                <span class="text-[10px] font-black tracking-widest uppercase text-slate-800 dark:text-slate-200">Intelligence-Driven Coaching</span>
-              </div>
+              <div class="inline-block px-4 py-1.5 rounded-full border border-card-border bg-card-bg/50 backdrop-blur-sm">
+                <span class="text-[10px] font-black tracking-widest uppercase text-text">Intelligence-Driven Coaching</span>
+              </div> <br><br>
 
               <div class="space-y-4">
-                <h2 class="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9]">
-                  Build the <br/>
-                  <span class="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic pr-1">Perfect Prompt.</span>
-                </h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wide leading-relaxed max-w-sm mx-auto">
+                <h2 class="text-4xl lg:text-5xl font-black text-text tracking-tighter leading-[0.9]">
+                  Build the <br/>Perfect Prompt.
+                </h2> <br>
+                <p class="text-xs text-text opacity-70 font-bold uppercase tracking-wide leading-relaxed max-w-sm mx-auto">
                   Transform vague requests into structured, high-performance instructions using our expert deep coaching methodology.
                 </p>
-                <div class="pt-4 flex items-center justify-center gap-3 text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest opacity-70">
+                <div class="pt-4 flex items-center justify-center gap-3 text-[10px] font-black text-text opacity-90 uppercase tracking-widest">
                    <span>4-Stage Loop</span>
                    <span class="w-1 h-1 rounded-full bg-current"></span>
                    <span>Context Analysis</span>
@@ -202,7 +194,7 @@
               <div class="pt-6">
                 <button 
                   @click="$emit('start-session')"
-                  class="px-8 py-4 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-105 hover:shadow-primary/40 transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
+                  class="px-8 py-4 bg-primary text-text rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-105 hover:shadow-primary/40 transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3"/></svg>
                   Launch Session
@@ -230,7 +222,7 @@
             <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
             </div>
-            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">{{ error }}</span>
+            <span class="text-xs font-bold text-text">{{ error }}</span>
           </div>
           <button @click="clearError" class="p-1 hover:bg-secondary rounded-lg">✕</button>
         </div>
@@ -246,8 +238,7 @@ import ChatMessageList from './ChatMessageList.vue'
 import UnifiedChatInput from './UnifiedChatInput.vue'
 import { useCoachChat } from './useCoachChat.js'
 import './coach-chat.css'
-import logoLight from '@/assets/images/logoLight.png'
-import logoDark from '@/assets/images/logoDark.png'
+import logo from '@/assets/images/logo.svg'
 
 const props = defineProps({
   messages: Array,

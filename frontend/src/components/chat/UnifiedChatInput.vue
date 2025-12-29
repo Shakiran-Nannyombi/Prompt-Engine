@@ -35,7 +35,7 @@
               @paste="handlePaste"
               @keydown="handleKeyDown"
               placeholder="How can I help you today?"
-              class="w-full bg-transparent border-0 outline-none text-text text-[16px] placeholder:text-text/40 resize-none overflow-hidden py-0 leading-relaxed block font-normal antialiased"
+              class="w-full bg-transparent border-0 outline-none text-text text-[16px] placeholder:text-text/70 resize-none overflow-hidden py-0 leading-relaxed block font-normal antialiased"
               rows="1"
               autofocus
               style="min-height: 1.5em; height: auto;"
@@ -50,7 +50,7 @@
             <!-- Attach Button -->
             <button
               @click="triggerFileUpload"
-              class="inline-flex items-center justify-center relative shrink-0 transition-colors duration-200 h-8 w-8 rounded-lg active:scale-95 text-text opacity-50 hover:opacity-100 hover:bg-secondary"
+              class="inline-flex items-center justify-center relative shrink-0 transition-colors duration-200 h-8 w-8 rounded-lg active:scale-95 text-text opacity-70 hover:opacity-100 hover:bg-secondary"
               type="button"
               aria-label="Attach file"
             >
@@ -64,7 +64,7 @@
               <button
                 @click="isThinkingEnabled = !isThinkingEnabled"
                 class="transition-all duration-200 h-8 w-8 flex items-center justify-center rounded-lg active:scale-95"
-                :class="isThinkingEnabled ? 'text-primary bg-primary/10' : 'text-text opacity-50 hover:opacity-100 hover:bg-secondary'"
+                :class="isThinkingEnabled ? 'text-primary bg-primary/10' : 'text-text opacity-70 hover:opacity-100 hover:bg-secondary'"
               >
                 <!-- Brain/Thinking Icon -->
                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -117,7 +117,7 @@
     />
 
     <div class="text-center mt-4">
-      <p class="text-xs text-text opacity-50">
+      <p class="text-xs text-text opacity-70">
         AI can make mistakes. Please check important information.
       </p>
     </div>
