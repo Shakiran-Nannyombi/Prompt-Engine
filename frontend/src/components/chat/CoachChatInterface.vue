@@ -43,8 +43,11 @@
         <!-- Main Progress -->
         <div class="p-4 border-b border-card-border">
           <div class="flex items-center justify-between mb-3">
-            <h3 class="text-[10px] font-black text-text opacity-50 uppercase tracking-widest">Efficiency</h3>
-            <span class="text-[10px] font-bold text-primary">{{ Math.round(progressInfo.progressPercentage) }}%</span>
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap text-primary opacity-70"><path d="M4 14.5 14 3l-2.5 9h8.5L10 21l2.5-9z"/></svg>
+              <h3 class="text-[10px] font-black text-slate-800 dark:text-slate-200 opacity-60 uppercase tracking-widest">Efficiency</h3>
+            </div>
+            <span class="text-[10px] font-black text-primary">{{ Math.round(progressInfo.progressPercentage) }}%</span>
           </div>
           <div class="w-full bg-secondary rounded-full h-1.5 mb-4 overflow-hidden">
             <div 
@@ -75,7 +78,10 @@
         <!-- Captured Details -->
         <div class="p-4 border-b border-card-border">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-[10px] font-black text-text opacity-50 uppercase tracking-widest">Insights</h3>
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb text-primary opacity-70"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <h3 class="text-[10px] font-black text-slate-800 dark:text-slate-200 opacity-60 uppercase tracking-widest">Insights</h3>
+            </div>
           </div>
           <div class="space-y-4">
             <div v-for="field in ['task', 'context']" :key="field" class="group">
@@ -117,8 +123,8 @@
       <div class="chat-header border-b border-card-border/50 bg-background/80 backdrop-blur-md p-6 transition-colors duration-300 z-10 pt-20 lg:pt-6">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
-            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <span class="text-xl">🎙️</span>
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mic"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
             </div>
             <div>
               <h1 class="text-xl font-black text-text tracking-tight">Coach Interface</h1>
@@ -168,17 +174,40 @@
           <!-- Welcome Screen -->
           <div v-else class="h-full flex items-center justify-center animate-fade-in text-center p-8">
             <div class="max-w-md space-y-6">
-              <div class="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-3xl mx-auto shadow-xl flex items-center justify-center transform hover:rotate-12 transition-transform duration-500">
-                <span class="text-3xl text-white">✨</span>
+              <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-3xl mx-auto shadow-xl flex items-center justify-center transform hover:rotate-6 transition-transform duration-500 border border-card-border overflow-hidden">
+                 <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt Engine" class="w-full h-full object-cover" />
               </div>
-              <h2 class="text-3xl font-black text-text tracking-tight">Ready to Engineer?</h2>
-              <p class="text-sm text-text opacity-60 font-medium">Start your session to begin the multi-stage optimization process.</p>
-              <button 
-                @click="$emit('start-session')"
-                class="px-8 py-4 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-105 transition-all"
-              >
-                Launch Session
-              </button>
+              
+              <div class="inline-block px-4 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                <span class="text-[10px] font-black tracking-widest uppercase text-slate-800 dark:text-slate-200">Intelligence-Driven Coaching</span>
+              </div>
+
+              <div class="space-y-4">
+                <h2 class="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9]">
+                  Build the <br/>
+                  <span class="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic pr-1">Perfect Prompt.</span>
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wide leading-relaxed max-w-sm mx-auto">
+                  Transform vague requests into structured, high-performance instructions using our expert deep coaching methodology.
+                </p>
+                <div class="pt-4 flex items-center justify-center gap-3 text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest opacity-70">
+                   <span>4-Stage Loop</span>
+                   <span class="w-1 h-1 rounded-full bg-current"></span>
+                   <span>Context Analysis</span>
+                   <span class="w-1 h-1 rounded-full bg-current"></span>
+                   <span>Iterative Refinement</span>
+                </div>
+              </div>
+
+              <div class="pt-6">
+                <button 
+                  @click="$emit('start-session')"
+                  class="px-8 py-4 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-105 hover:shadow-primary/40 transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                  Launch Session
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -198,8 +227,10 @@
       <div v-if="error" class="absolute bottom-24 left-1/2 -translate-x-1/2 w-full max-w-lg px-4 animate-slide-up z-[200]">
         <div class="bg-card-bg/90 backdrop-blur-md border-2 border-primary/20 p-4 rounded-2xl shadow-2xl flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">⚠️</div>
-            <span class="text-xs font-bold text-text">{{ error }}</span>
+            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            </div>
+            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">{{ error }}</span>
           </div>
           <button @click="clearError" class="p-1 hover:bg-secondary rounded-lg">✕</button>
         </div>
@@ -215,6 +246,8 @@ import ChatMessageList from './ChatMessageList.vue'
 import UnifiedChatInput from './UnifiedChatInput.vue'
 import { useCoachChat } from './useCoachChat.js'
 import './coach-chat.css'
+import logoLight from '@/assets/images/logoLight.png'
+import logoDark from '@/assets/images/logoDark.png'
 
 const props = defineProps({
   messages: Array,

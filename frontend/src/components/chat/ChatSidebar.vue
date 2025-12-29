@@ -11,15 +11,14 @@
     <div class="sidebar-header p-4 border-b border-card-border bg-gradient-to-r from-primary/5 to-accent/5">
       <div class="flex items-center" :class="collapsed ? 'justify-center flex-col gap-8' : 'justify-between mb-8'">
         <div class="flex items-center" :class="collapsed ? 'flex-col gap-6' : 'space-x-6'">
-          <div class="logo-container relative bg-white dark:bg-card-bg rounded-full transition-all duration-300 shadow-md" :class="collapsed ? 'w-10 h-10' : 'w-14 h-14'">
-            <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt Engine" class="w-full h-full drop-shadow-md" />
-            <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full blur-sm"></div>
+          <div class="logo-container relative bg-white dark:bg-slate-800 rounded-full transition-all duration-300 shadow-md flex items-center justify-center overflow-hidden border border-card-border" :class="collapsed ? 'w-10 h-10' : 'w-14 h-14'">
+            <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt Engine" class="w-full h-full object-cover" />
           </div>
-          <div v-show="!collapsed" class="whitespace-nowrap overflow-hidden transition-all duration-300 ml-2">
-            <h2 class="text-xl font-extrabold text-text dark:text-white tracking-tight">
+          <div v-show="!collapsed" class="whitespace-nowrap overflow-hidden transition-all duration-300 ml-3">
+            <h2 class="text-lg font-black text-slate-900 dark:text-white tracking-tight leading-none">
               {{ title }}
             </h2>
-            <p class="text-xs text-text opacity-70 font-semibold uppercase tracking-wider">{{ subtitle }}</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">{{ subtitle }}</p>
           </div>
         </div>
         

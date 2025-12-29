@@ -1857,15 +1857,16 @@ body,
 .newsletter-input {
   flex: 1;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
   border-radius: 0.5rem;
   color: var(--color-text);
   font-size: 0.9rem;
 }
 
 .newsletter-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text);
+  opacity: 0.5;
 }
 
 .newsletter-button {

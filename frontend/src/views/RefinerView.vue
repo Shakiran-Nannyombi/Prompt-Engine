@@ -36,12 +36,24 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden bg-background">
+      <div class="chat-header border-b border-card-border/50 bg-background/80 backdrop-blur-md p-6 transition-colors duration-300 z-10 pt-20 lg:pt-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2"><path d="m21 21-2.156-2.156"/><path d="M18 5 5 18"/><path d="M4 11V9"/><path d="M9 4V2"/><path d="M4 4h2"/><path d="M10 10V8"/><path d="M15 15v-2"/><path d="M10 15h2"/><path d="M15 10h2"/></svg>
+            </div>
+            <div>
+              <h1 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">Refiner Assistant</h1>
+              <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">Optimize and polish your prompts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <ChatInterface 
-        title="Refiner Assistant" 
-        subtitle="Optimize and polish your prompts"
+        :showHeader="false" 
         variant="refiner"
-        :showHeader="true" 
-        class="pt-16 lg:pt-0"
+        class="flex-1"
       />
     </div>
   </div>
