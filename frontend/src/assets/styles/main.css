@@ -5,41 +5,44 @@
 
 /* CSS Custom Properties for Theme Colors */
 :root {
-  /* Light Mode Colors */
+  /* Light Mode Colors - Professional Clean Aesthetic */
   --color-primary: #f60968;
-  --color-secondary: #e8d7ef;
-  --color-accent: #c4a3d2;
-  --color-background: #e6e5fb;
-  --color-text: #1f1e1e;
+  --color-secondary: #f1f5f9; /* Slate-100 */
+  --color-accent: #e2e8f0;    /* Slate-200 */
+  --color-background: #ffffff;
+  --color-text: #0f172a;      /* Slate-900 */
   
   /* Light Mode Component Colors */
   --color-card-bg: #ffffff;
-  --color-card-border: #e5e7eb;
-  --color-input-bg: #ffffff;
-  --color-input-border: #d1d5db;
-  --color-scrollbar-track: #f1f5f9;
-  --color-scrollbar-thumb: #cbd5e1;
+  --color-card-border: #e2e8f0;
+  --color-input-bg: #f8fafc;
+  --color-input-border: #cbd5e1;
+  --color-scrollbar-track: #f8fafc;
+  --color-scrollbar-thumb: #94a3b8;
   --color-selection-bg: #fde6eb;
   --color-selection-text: #800530;
+  
+  --color-success: #10b981;
+  --color-error: #ef4444;
 }
 
-/* Dark Mode Colors */
+/* Dark Mode Colors - Premium Obsidian Aesthetic */
 .dark {
   --color-primary: #f60968;
-  --color-secondary: #200f27;
-  --color-accent: #4e2d5c;
-  --color-background: #05041a;
-  --color-text: #e1e0e0;
+  --color-secondary: #1e293b; /* Slate-800 */
+  --color-accent: #334155;    /* Slate-700 */
+  --color-background: #020617; /* Blue-950 */
+  --color-text: #f1f5f9;      /* Slate-100 */
   
   /* Dark Mode Component Colors */
-  --color-card-bg: #0f0a1a;
-  --color-card-border: #2d1b3d;
-  --color-input-bg: #0f0a1a;
-  --color-input-border: #4e2d5c;
-  --color-scrollbar-track: #1a0d2e;
-  --color-scrollbar-thumb: #4e2d5c;
+  --color-card-bg: #0f172a;    /* Slate-900 */
+  --color-card-border: #1e293b;
+  --color-input-bg: #020617;
+  --color-input-border: #334155;
+  --color-scrollbar-track: #020617;
+  --color-scrollbar-thumb: #334155;
   --color-selection-bg: #4e2d5c;
-  --color-selection-text: #e1e0e0;
+  --color-selection-text: #f1f5f9;
 }
 
 #app {

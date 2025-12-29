@@ -88,6 +88,24 @@ GRANT ALL PRIVILEGES ON DATABASE promptengine_db TO languser;
 psql -h localhost -U languser -d promptengine_db
 ```
 
+## Migration to Supabase
+
+Supabase provides a hosted PostgreSQL database. To migrate:
+
+1.  **Get Credentials**: Go to your Supabase Project Settings > Database and copy the **Connection string** (choose Python/psycopg).
+2.  **Update .env**: Paste the connection string into `DATABASE_URL`.
+3.  **Initialize Database**: Run the schema script to create application tables.
+
+```sh
+uv run python -c "from database import init_db; init_db()"
+```
+
+4.  **Seed Data**: Populate initial frameworks and data.
+
+```sh
+uv run python seed.py
+```
+
 ## Running Tests with pytest
 
 Run this pytest command in the /tests folder

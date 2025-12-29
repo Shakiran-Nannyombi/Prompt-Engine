@@ -81,12 +81,6 @@
 
           <!-- Right Tools -->
           <div class="flex flex-row items-center min-w-0 gap-1">
-            <ModelSelector
-              :models="models"
-              :selectedModel="selectedModel"
-              @select="selectedModel = $event"
-            />
-
             <button
               @click="handleSend"
               :disabled="!hasContent"

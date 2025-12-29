@@ -9,16 +9,22 @@
           <span class="brand-name">Prompt-Engine</span>
         </div>
         
-        <!-- Navigation Links -->
-        <div class="navbar-links">
-          <RouterLink to="/" class="nav-link">Home</RouterLink>
-          <RouterLink to="/coach" class="nav-link">Coach</RouterLink>
-          <RouterLink to="/refiner" class="nav-link">Refiner</RouterLink>
-          <RouterLink to="/about " class="nav-link">Documentation</RouterLink>
-        </div>
-        
-        <!-- Theme Toggle and CTA Button -->
-        <div class="navbar-actions">
+        <!-- Mobile Menu Button -->
+        <button 
+          @click="toggleMobileMenu" 
+          class="mobile-menu-toggle md:hidden"
+          aria-label="Toggle mobile menu"
+        >
+          <svg v-if="!showMobileMenu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <!-- Theme Toggle and CTA Button (Desktop) -->
+        <div class="navbar-actions hidden md:flex">
           <button @click="toggleTheme" class="theme-toggle" :class="{ 'dark': isDarkMode }">
             <svg v-if="!isDarkMode" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
@@ -32,6 +38,39 @@
           </RouterLink>
         </div>
       </div>
+
+      <!-- Mobile Dropdown Menu -->
+      <Transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0 -translate-y-4"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-4"
+      >
+        <div v-if="showMobileMenu" class="mobile-menu md:hidden">
+          <div class="mobile-menu-links">
+            <RouterLink to="/" class="mobile-nav-link" @click="showMobileMenu = false">Home</RouterLink>
+            <RouterLink to="/coach" class="mobile-nav-link" @click="showMobileMenu = false">Coach</RouterLink>
+            <RouterLink to="/refiner" class="mobile-nav-link" @click="showMobileMenu = false">Refiner</RouterLink>
+            <RouterLink to="/about" class="mobile-nav-link" @click="showMobileMenu = false">Documentation</RouterLink>
+          </div>
+          <div class="mobile-menu-actions">
+            <button @click="toggleTheme" class="mobile-theme-toggle">
+              <span class="mr-2">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+              <svg v-if="!isDarkMode" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+              </svg>
+              <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+            <RouterLink to="/tutorials" class="mobile-cta" @click="showMobileMenu = false">
+              Try Tutorials
+            </RouterLink>
+          </div>
+        </div>
+      </Transition>
     </nav>
 
     <!-- Hero Section 1 -->
@@ -389,6 +428,11 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 // Theme toggle
 const isDarkMode = ref(false)
+const showMobileMenu = ref(false)
+
+const toggleMobileMenu = () => {
+  showMobileMenu.value = !showMobileMenu.value
+}
 
 const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value
@@ -534,29 +578,47 @@ onMounted(() => {
     document.documentElement.classList.remove('dark')
   }
 
-  // Load VANTA scripts dynamically
-  const loadScript = (src) => {
+const loadScript = (src) => {
     return new Promise((resolve, reject) => {
+      // Check if script is already loaded
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve()
+        return
+      }
+      
       const script = document.createElement('script')
       script.src = src
+      script.async = true
       script.onload = resolve
       script.onerror = reject
       document.head.appendChild(script)
     })
   }
 
-  // Load scripts and initialize VANTA
-  Promise.all([
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js'),
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.halo.min.js'),
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js'),
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.topology.min.js')
-  ]).then(() => {
-    // Initialize VANTA effects
+  // Check if VANTA is already loaded
+  if (window.VANTA) {
     initializeVantaEffects()
-  }).catch(error => {
-    console.error('Failed to load VANTA scripts:', error)
-  })
+  } else {
+    // Load scripts and initialize VANTA
+    Promise.all([
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js'),
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js')
+    ]).then(() => {
+        // Load Vanta effects after dependencies
+        return Promise.all([
+            loadScript('https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.halo.min.js'),
+            loadScript('https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.topology.min.js')
+        ])
+    }).then(() => {
+      // Initialize VANTA effects
+      // Small delay to ensure scripts are parsed and executed
+      setTimeout(() => {
+        initializeVantaEffects()
+      }, 100)
+    }).catch(error => {
+      console.error('Failed to load VANTA scripts:', error)
+    })
+  }
 
   // Add scroll handler for zoom effect
   scrollHandler = () => {
@@ -590,8 +652,13 @@ onMounted(() => {
   
   window.addEventListener('scroll', navbarScrollHandler)
   
-  // Start typewriter animation
+  // Start typewriter animation cleanup first to avoid duplicates
+  if (typewriterInterval) clearTimeout(typewriterInterval)
   setTimeout(() => {
+    // Reset state for cleaner re-entry
+    currentIndex = 0
+    isDeleting = false
+    if(typewriterText.value) typewriterText.value.innerHTML = ''
     typeWriter()
   }, 1000) // Start after 1 second delay
 })
@@ -600,22 +667,27 @@ onUnmounted(() => {
   // Clean up VANTA effects
   if (vantaEffect) {
     vantaEffect.destroy()
+    vantaEffect = null
   }
   if (vantaCtaEffect) {
     vantaCtaEffect.destroy()
+    vantaCtaEffect = null
   }
   
   // Clean up scroll handlers
   if (scrollHandler) {
     window.removeEventListener('scroll', scrollHandler)
+    scrollHandler = null
   }
   if (navbarScrollHandler) {
     window.removeEventListener('scroll', navbarScrollHandler)
+    navbarScrollHandler = null
   }
   
   // Clean up typewriter animation
   if (typewriterInterval) {
     clearTimeout(typewriterInterval)
+    typewriterInterval = null
   }
 })
 </script>

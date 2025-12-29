@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-interface flex flex-col h-full bg-background">
+  <div class="chat-interface flex flex-col h-full bg-white dark:bg-gray-900">
     <!-- Chat Header (Optional) -->
     <div v-if="showHeader || $slots.header" class="chat-header border-b border-card-border bg-card-bg">
       <slot name="header">
@@ -11,24 +11,28 @@
     </div>
 
     <!-- Messages Container -->
-    <div class="chat-messages flex-1 overflow-hidden">
-      <ChatMessageList 
-        :messages="messages"
-        :isLoading="isLoading"
-        :loadingMessage="loadingMessage"
-        :variant="variant"
-        @scroll-to-bottom="handleScrollToBottom"
-      />
+    <div class="chat-messages flex-1 overflow-hidden relative">
+      <div class="max-w-3xl mx-auto h-full w-full">
+        <ChatMessageList 
+          :messages="messages"
+          :isLoading="isLoading"
+          :loadingMessage="loadingMessage"
+          :variant="variant"
+          @scroll-to-bottom="handleScrollToBottom"
+        />
+      </div>
     </div>
 
     <!-- Input Area -->
-    <div class="chat-input border-t border-card-border bg-card-bg">
-      <UnifiedChatInput
-        :disabled="isLoading"
-        :placeholder="inputPlaceholder"
-        @send-message="handleSendMessage"
-        @stop-generation="handleStopGeneration"
-      />
+    <div class="chat-input absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pt-10">
+      <div class="max-w-3xl mx-auto w-full">
+        <UnifiedChatInput
+          :disabled="isLoading"
+          :placeholder="inputPlaceholder"
+          @send-message="handleSendMessage"
+          @stop-generation="handleStopGeneration"
+        />
+      </div>
     </div>
 
     <!-- Error Display -->

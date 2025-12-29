@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: prompt-engine-backend
+    env: python
+    buildCommand: "cd backend && uv sync && uv pip install gunicorn uvicorn"
+    startCommand: "cd backend && gunicorn -k uvicorn.workers.UvicornWorker main:app"
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: COACH_LANGSMITH_API_KEY
+        sync: false
+      - key: REFINER_LANGSMITH_API_KEY
+        sync: false
+      - key: LANGSMITH_TRACING
+        value: "true"
+      - key: LANGSMITH_PROJECT
+        value: "prompt-engine"
