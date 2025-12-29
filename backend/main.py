@@ -30,6 +30,33 @@ app.add_middleware(
 )
 
 # Root endpoint
+@app.get("/health")
+async def health_check():
+    """Check if API and critical services are responsive"""
+    from agents.coach_agent import DB_URI
+    import psycopg
+    
+    health = {
+        "status": "up",
+        "database": "unknown",
+        "environment": {
+            "GROQ_API_KEY": "set" if os.environ.get("GROQ_API_KEY") else "missing",
+            "DATABASE_URL": "set" if os.environ.get("DATABASE_URL") else "missing",
+            "TAVILY_API_KEY": "set" if os.environ.get("TAVILY_API_KEY") else "missing"
+        }
+    }
+    
+    # Check Database
+    try:
+        conn = psycopg.connect(DB_URI)
+        conn.close()
+        health["database"] = "connected"
+    except Exception as e:
+        health["status"] = "partially_down"
+        health["database"] = f"error: {str(e)}"
+        
+    return health
+
 @app.get("/")
 async def root():
     """Welcome endpoint with API information"""
@@ -38,6 +65,7 @@ async def root():
         "version": "1.0.0",
         "services": {
             "coaching": "/coaching/",
-            "refiner": "/refiner/"
+            "refiner": "/refiner/",
+            "health": "/health"
         }
     }

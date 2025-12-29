@@ -49,6 +49,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import './input-styles.css'
 
 const props = defineProps({
   file: {
@@ -78,12 +79,4 @@ const formattedSize = computed(() => {
 </script>
 
 <style scoped>
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
 </style>

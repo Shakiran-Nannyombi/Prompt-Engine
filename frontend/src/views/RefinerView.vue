@@ -1,13 +1,9 @@
 <template>
   <div class="refiner-view flex h-screen bg-background relative overflow-hidden">
     <!-- Mobile Header/Navbar -->
-    <div class="mobile-header lg:hidden fixed top-0 left-0 right-0 h-16 bg-card-bg border-b border-card-border z-[70] flex items-center justify-between px-4">
+    <div class="mobile-header lg:hidden fixed top-0 left-0 right-0 h-16 bg-background border-b border-card-border z-[160] flex items-center justify-between px-4">
       <div class="flex items-center space-x-2">
-        <div class="logo-container w-8 h-8 bg-white rounded-full relative">
-          <img src="/PE_logo.svg" alt="Prompt Engine" class="w-full h-full" />
-          <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full blur-sm"></div>
-        </div>
-        <span class="text-sm font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Refiner</span>
+        <span class="text-xs font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent uppercase tracking-widest">Refine Prompt</span>
       </div>
       <button @click="toggleSidebar" class="p-2 rounded-lg hover:bg-secondary transition-colors" aria-label="Toggle Menu">
         <svg v-if="sidebarCollapsed" class="w-6 h-6 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,18 +18,18 @@
     <!-- Sidebar -->
     <div 
       ref="sidebarRef"
-      class="sidebar border-r border-card-border bg-card-bg flex flex-col pt-0 transition-all duration-300 ease-in-out fixed lg:relative h-full z-[60] lg:z-40 overflow-y-auto no-scrollbar"
+      class="sidebar border-r border-card-border bg-background flex flex-col pt-0 transition-all duration-300 ease-in-out fixed lg:relative h-full z-[150] lg:z-40 overflow-y-auto no-scrollbar"
       :class="[
         sidebarCollapsed ? '-translate-x-full lg:translate-x-0 lg:w-20' : 'translate-x-0 w-full lg:w-72',
-        !sidebarCollapsed ? 'top-0 left-0 right-0 bottom-0 shadow-2xl' : ''
+        !sidebarCollapsed ? 'inset-0 shadow-2xl' : ''
       ]"
     >
       <!-- Sidebar Header -->
       <div class="sidebar-header p-4 border-b border-card-border bg-gradient-to-r from-primary/5 to-accent/5 mt-0 lg:mt-0">
         <div class="flex items-center" :class="sidebarCollapsed ? 'justify-center flex-col gap-4' : 'justify-between mb-4'">
           <div class="flex items-center" :class="sidebarCollapsed ? 'flex-col gap-2' : 'space-x-3'">
-            <div class="logo-container relative bg-white rounded-full transition-all duration-300" :class="sidebarCollapsed ? 'w-8 h-8' : 'w-10 h-10'">
-              <img src="/PE_logo.svg" alt="Prompt Engine" class="w-full h-full drop-shadow-lg" />
+            <div class="logo-container relative bg-white dark:bg-card-bg rounded-full transition-all duration-300" :class="sidebarCollapsed ? 'w-8 h-8' : 'w-10 h-10'">
+              <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt Engine" class="w-full h-full drop-shadow-lg" />
               <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full blur-sm"></div>
             </div>
             <div v-show="!sidebarCollapsed" class="whitespace-nowrap overflow-hidden transition-all duration-300">
@@ -141,6 +137,8 @@
 import { ref, onMounted } from 'vue'
 import ChatInterface from '@/components/chat/ChatInterface.vue'
 import gsap from 'gsap'
+import logoLight from '@/assets/images/logoLight.png'
+import logoDark from '@/assets/images/logoDark.png'
 
 // Theme Management
 const isDarkMode = ref(false)

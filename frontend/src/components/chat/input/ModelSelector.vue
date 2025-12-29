@@ -74,6 +74,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import './input-styles.css'
 
 const props = defineProps({
   models: {
@@ -116,12 +117,4 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.animate-fade-in {
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
 </style>

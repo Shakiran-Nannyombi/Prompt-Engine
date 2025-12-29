@@ -5,7 +5,7 @@
       <div class="navbar-content">
         <!-- Logo and Brand -->
         <div class="navbar-brand">
-          <img src="/PE_logo.svg" alt="Prompt-Engine Logo" class="logo-icon" />
+          <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt-Engine Logo" class="logo-icon hidden md:block" />
           <span class="brand-name">Prompt-Engine</span>
         </div>
         
@@ -39,16 +39,22 @@
         </div>
       </div>
 
-      <!-- Mobile Dropdown Menu -->
       <Transition
-        enter-active-class="transition ease-out duration-200"
-        enter-from-class="opacity-0 -translate-y-4"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-active-class="transition ease-in duration-150"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 -translate-y-4"
+        @enter="onMenuEnter"
+        @leave="onMenuLeave"
       >
-        <div v-if="showMobileMenu" class="mobile-menu md:hidden">
+        <div v-if="showMobileMenu" class="mobile-menu md:hidden fixed inset-0 z-[10001] bg-background flex flex-col">
+          <div class="mobile-menu-header p-4 border-b border-card-border flex items-center justify-between">
+            <div class="navbar-brand">
+              <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt-Engine Logo" class="logo-icon" />
+              <span class="brand-name">Prompt-Engine</span>
+            </div>
+            <button @click="showMobileMenu = false" class="p-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
           <div class="mobile-menu-links">
             <RouterLink to="/" class="mobile-nav-link" @click="showMobileMenu = false">Home</RouterLink>
             <RouterLink to="/coach" class="mobile-nav-link" @click="showMobileMenu = false">Coach</RouterLink>
@@ -425,6 +431,8 @@
 import { RouterLink } from 'vue-router'
 import '@/assets/styles/HomeView.css'
 import { onMounted, onUnmounted, ref } from 'vue'
+import logoLight from '@/assets/images/logoLight.png'
+import logoDark from '@/assets/images/logoDark.png'
 
 // Theme toggle
 const isDarkMode = ref(false)
@@ -432,6 +440,23 @@ const showMobileMenu = ref(false)
 
 const toggleMobileMenu = () => {
   showMobileMenu.value = !showMobileMenu.value
+}
+
+const onMenuEnter = (el, done) => {
+  gsap.fromTo(el,
+    { y: '-100%', opacity: 0 },
+    { y: '0%', opacity: 1, duration: 0.5, ease: 'power3.out', onComplete: done }
+  )
+}
+
+const onMenuLeave = (el, done) => {
+  gsap.to(el, {
+    y: '-100%',
+    opacity: 0,
+    duration: 0.4,
+    ease: 'power3.in',
+    onComplete: done
+  })
 }
 
 const toggleTheme = () => {

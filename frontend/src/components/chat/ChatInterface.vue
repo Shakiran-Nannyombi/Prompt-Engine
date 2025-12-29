@@ -1,7 +1,7 @@
 <template>
-  <div class="chat-interface flex flex-col h-full bg-white dark:bg-gray-900">
+  <div class="chat-interface flex flex-col h-full bg-background">
     <!-- Chat Header (Optional) -->
-    <div v-if="showHeader || $slots.header" class="chat-header border-b border-card-border bg-card-bg">
+    <div v-if="showHeader || $slots.header" class="chat-header border-b border-card-border bg-background">
       <slot name="header">
         <div class="p-4">
           <h2 class="text-lg font-semibold text-text">{{ title }}</h2>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Input Area -->
-    <div class="chat-input absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pt-10">
+    <div class="chat-input absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background/90 to-transparent pt-10">
       <div class="max-w-3xl mx-auto w-full">
         <UnifiedChatInput
           :disabled="isLoading"

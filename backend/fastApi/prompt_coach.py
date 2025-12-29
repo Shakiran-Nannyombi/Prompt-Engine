@@ -65,8 +65,10 @@ async def chat_with_coach(request: CoachingRequest):
         # Re-raise HTTP exceptions as-is
         raise
     except Exception as e:
-        print(f"An error occurred: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        import traceback
+        error_trace = traceback.format_exc()
+        print(f"An error occurred: {e}\n{error_trace}")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 @router.post("/threads")
 async def create_new_thread() -> Dict[str, str]:

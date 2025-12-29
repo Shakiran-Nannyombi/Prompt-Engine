@@ -1,13 +1,9 @@
 <template>
     <div class="coach-chat-interface flex h-full bg-background relative overflow-hidden">
     <!-- Mobile Header/Navbar -->
-    <div class="mobile-header lg:hidden fixed top-0 left-0 right-0 h-16 bg-card-bg border-b border-card-border z-[70] flex items-center justify-between px-4">
+    <div class="mobile-header lg:hidden fixed top-0 left-0 right-0 h-16 bg-background border-b border-card-border z-[160] flex items-center justify-between px-4">
       <div class="flex items-center space-x-2">
-        <div class="logo-container w-8 h-8 bg-white rounded-full relative">
-          <img src="/PE_logo.svg" alt="Prompt Engine" class="w-full h-full" />
-          <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full blur-sm"></div>
-        </div>
-        <span class="text-sm font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Prompt Engine</span>
+        <span class="text-xs font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent uppercase tracking-widest">Master Prompting</span>
       </div>
       <button @click="toggleSidebar" class="p-2 rounded-lg hover:bg-secondary transition-colors" aria-label="Toggle Menu">
         <svg v-if="sidebarCollapsed" class="w-6 h-6 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,10 +18,10 @@
     <!-- Progress Tracker Sidebar -->
     <div 
       ref="sidebarRef"
-      class="progress-sidebar border-r border-card-border bg-card-bg flex flex-col transition-all duration-300 ease-in-out fixed lg:relative h-full z-[60] lg:z-40 overflow-y-auto no-scrollbar"
+      class="progress-sidebar border-r border-card-border bg-background flex flex-col transition-all duration-300 ease-in-out fixed lg:relative h-full z-[150] lg:z-40 overflow-y-auto no-scrollbar"
       :class="[
-        sidebarCollapsed ? '-translate-x-full lg:translate-x-0 lg:w-20' : 'translate-x-0 w-full lg:w-72',
-        !sidebarCollapsed ? 'top-0 left-0 right-0 bottom-0 shadow-2xl' : ''
+        sidebarCollapsed ? '-translate-x-full lg:translate-x-0 lg:w-20' : 'translate-x-0 w-full lg:w-80',
+        !sidebarCollapsed ? 'inset-0 shadow-2xl backdrop-blur-xl' : ''
       ]"
     >
       <!-- Sidebar Header -->
@@ -33,8 +29,8 @@
         <!-- Logo and Title Section -->
         <div class="flex items-center" :class="sidebarCollapsed ? 'justify-center flex-col gap-4' : 'justify-between mb-4'">
           <div class="flex items-center" :class="sidebarCollapsed ? 'flex-col gap-2' : 'space-x-3'">
-            <div class="logo-container relative bg-white rounded-full transition-all duration-300" :class="sidebarCollapsed ? 'w-8 h-8' : 'w-10 h-10'">
-              <img src="/PE_logo.svg" alt="Prompt Engine" class="w-full h-full drop-shadow-lg" />
+            <div class="logo-container relative bg-white dark:bg-card-bg rounded-full transition-all duration-300" :class="sidebarCollapsed ? 'w-8 h-8' : 'w-10 h-10'">
+              <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt Engine" class="w-full h-full drop-shadow-lg" />
               <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full blur-sm"></div>
             </div>
             <div v-show="!sidebarCollapsed" class="whitespace-nowrap overflow-hidden transition-all duration-300">
@@ -289,7 +285,7 @@
     <!-- Main Chat Area -->
     <div class="main-chat flex-1 flex flex-col relative">
       <!-- Chat Header -->
-      <div class="chat-header border-b border-card-border/50 bg-card-bg/80 backdrop-blur-sm p-6 transition-colors duration-300 z-10 pt-20 lg:pt-6">
+      <div class="chat-header border-b border-card-border/50 bg-background/80 backdrop-blur-md p-6 transition-colors duration-300 z-10 pt-20 lg:pt-6">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4 flex-1">
               <div>
@@ -339,27 +335,88 @@
         </div>
   
         <!-- Messages Container -->
-      <div class="messages-container flex-1 overflow-hidden relative">
-        <div class="max-w-4xl mx-auto h-full w-full px-4 md:px-8 lg:px-16">
-          <ChatMessageList 
-            :messages="messages"
-            :isLoading="isLoading"
-            :loadingMessage="loadingMessage"
-            variant="coach"
-            @scroll-to-bottom="handleScrollToBottom"
-          />
+        <div class="messages-container flex-1 overflow-hidden relative">
+          <div class="max-w-4xl mx-auto h-full w-full px-4 md:px-8 lg:px-16 relative">
+            <ChatMessageList 
+              v-if="messages.length > 0 || isLoading"
+              :messages="messages"
+              :isLoading="isLoading"
+              :loadingMessage="loadingMessage"
+              variant="coach"
+              @scroll-to-bottom="handleScrollToBottom"
+            />
+          </div>
         </div>
-      </div>
+  
+        <!-- Ultra Premium Welcome Screen -->
+        <div v-if="messages.length === 0 && !isLoading" class="absolute inset-0 flex items-center justify-center p-6 bg-background z-[140]">
+          <div class="text-center w-full max-w-2xl px-4 animate-fade-in-up">
+            <!-- Animated Icon -->
+            <div class="mb-12 relative flex justify-center">
+              <div class="absolute inset-0 bg-primary/20 rounded-full blur-3xl scale-150 animate-pulse"></div>
+              <div class="w-24 h-24 md:w-32 md:h-32 rounded-[1.5rem] md:rounded-[2.5rem] bg-card-bg border border-card-border shadow-2xl flex items-center justify-center relative transform rotate-6 hover:rotate-0 transition-all duration-700 group cursor-pointer overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <img src="/PE_logo.svg" alt="Prompt Engine" class="w-12 h-12 md:w-16 md:h-16 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-500" />
+              </div>
+            </div>
 
-      <!-- Chat Input -->
-      <div class="chat-input absolute bottom-0 left-0 right-0 p-4 pt-10 z-20">
-        <div class="max-w-4xl mx-auto w-full px-4 md:px-8 lg:px-16">
-          <UnifiedChatInput
-            :disabled="isLoading"
-            @send-message="handleSendMessage"
-          />
+            <!-- Typography -->
+            <div class="space-y-4 md:space-y-6 mb-12">
+              <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-secondary border border-card-border text-[10px] font-bold uppercase tracking-[0.2em] text-text/60">
+                Intelligence-Driven Coaching
+              </div>
+              
+              <h2 class="text-4xl md:text-7xl font-black text-text tracking-tighter leading-[0.95] animate-slide-up">
+                Build the<br />
+                <span class="text-primary italic">Perfect</span> Prompt.
+              </h2>
+              
+              <p class="text-sm md:text-base text-text opacity-50 max-w-md mx-auto leading-relaxed uppercase tracking-tight font-medium">
+                Transform vague requests into structured, high-performance instructions using our expert deep coaching methodology.
+              </p>
+            </div>
+
+            <!-- CTA -->
+            <div class="flex flex-col items-center gap-6">
+              <button 
+                @click="$emit('start-session')"
+                class="relative group px-10 py-4 md:px-12 md:py-5 bg-text text-background rounded-full font-black text-base md:text-lg transition-all hover:scale-105 active:scale-95 shadow-2xl hover:shadow-primary/20"
+              >
+                <span class="flex items-center space-x-3">
+                  <span>🚀 Launch Session</span>
+                  <svg class="w-5 h-5 md:w-6 md:h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </button>
+              
+              <div class="hidden sm:flex items-center justify-center space-x-20 text-[10px] font-black text-text/30 uppercase tracking-[0.5em]">
+                <div class="flex items-center">
+                  <span class="w-1.5 h-1.5 bg-primary rounded-full mr-6 shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.5)]"></span>
+                  <span>4-Stage Loop</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-1.5 h-1.5 bg-primary rounded-full mr-6 shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.5)]"></span>
+                  <span>Context Analysis</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-1.5 h-1.5 bg-primary rounded-full mr-6 shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.5)]"></span>
+                  <span>Iterative refinement</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+  
+        <!-- Chat Input -->
+        <div class="chat-input absolute bottom-0 left-0 right-0 p-4 pt-10 z-[150] bg-gradient-to-t from-background via-background/90 to-transparent">
+          <div class="max-w-4xl mx-auto w-full px-4 md:px-8 lg:px-16">
+            <UnifiedChatInput
+              :disabled="isLoading"
+              @send-message="handleSendMessage"
+            />
+          </div>
+        </div>
   
         <!-- Error Display -->
         <div v-if="error" class="error-display border-t border-error bg-error-50 p-4">
@@ -389,6 +446,8 @@
   import ChatMessageList from './ChatMessageList.vue'
   import UnifiedChatInput from './UnifiedChatInput.vue'
   import gsap from 'gsap'
+  import logoLight from '@/assets/images/logoLight.png'
+  import logoDark from '@/assets/images/logoDark.png'
   
   const props = defineProps({
     messages: {
@@ -798,8 +857,7 @@ onMounted(() => {
 }
 
 .chat-input {
-  background-color: var(--color-card-bg);
-  border-color: var(--color-card-border);
+  border-color: transparent;
 }
 
 .error-display {
@@ -859,7 +917,8 @@ onMounted(() => {
   
   .progress-sidebar {
     width: 100%;
-    max-height: 35vh;
+    height: 100dvh;
+    max-height: none;
     overflow-y: auto;
   }
   
@@ -871,11 +930,70 @@ onMounted(() => {
 
 @media (max-width: 480px) {
   .progress-sidebar {
-    max-height: 30vh;
+    max-height: none;
+    height: 100dvh;
   }
   
   .main-chat {
     min-height: 70vh;
   }
 }
-  </style>
+  @keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-custom {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.05); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animation-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+@keyframes fade-in-up {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+</style>

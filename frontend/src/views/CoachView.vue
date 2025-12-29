@@ -19,6 +19,7 @@
         @download-prompt="handleDownloadPrompt"
         @load-thread="handleLoadThread"
         @create-thread="handleCreateThread"
+        @start-session="startNewConversation"
       />
     </div>
   </div>
@@ -108,7 +109,8 @@ const handleSendMessage = async (payload) => {
     updateProgressFromConversation(fullHistory)
 
   } catch (err) {
-    error.value = 'Failed to get response from coach. Please try again.'
+    const errorMsg = err.response?.data?.detail || err.message || 'Failed to get response from coach. Please try again.'
+    error.value = errorMsg
     console.error('Error sending message:', err)
   } finally {
     isLoading.value = false
@@ -323,8 +325,7 @@ const startNewConversation = () => {
 onMounted(async () => {
   // Create initial thread
   await createNewThread()
-  // Start new conversation
-  startNewConversation()
+  // Manual start only
 })
 </script>
 
@@ -359,7 +360,7 @@ onMounted(async () => {
   
   .nav-header .flex {
     flex-direction: column;
-    space-y: 0.5rem;
+    gap: 0.5rem;
   }
 }
 </style>
