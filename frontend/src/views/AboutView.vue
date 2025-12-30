@@ -197,7 +197,7 @@
           <div class="absolute inset-0 bg-white/5 group-hover:opacity-20 transition-opacity"></div>
           <div class="relative z-10 p-12 md:p-20 flex flex-col items-center text-center bg-[#0a0a0c] rounded-[2.9rem]">
              <h2 class="text-3xl md:text-5xl font-black mb-8 leading-tight">Ready to transform your<br><span class="cta-highlight">AI workflow?</span></h2>
-             <p class="text-lg opacity-70 mb-16 max-w-2xl">Join thousands of prompt engineers, developers, and creators who use Prompt-Engine to stay ahead of the curve.</p>
+             <p class="text-lg opacity-70 mb-24 max-w-2xl">Join thousands of prompt engineers, developers, and creators who use Prompt-Engine to stay ahead of the curve.</p>
              <div class="flex flex-col sm:flex-row gap-6 justify-center">
                 <RouterLink to="/register" class="px-10 py-4 cta-primary-button font-bold rounded-2xl">Get Started Free</RouterLink>
                 <RouterLink to="/coach" class="px-10 py-4 cta-secondary-button font-bold rounded-2xl">Talk to Coach</RouterLink>
