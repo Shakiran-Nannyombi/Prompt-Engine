@@ -37,7 +37,7 @@
           <p class="text-xs text-text opacity-70 leading-relaxed font-medium">Use the Refiner to improve clarity, tone, and structural integrity of your prompts before deployment.</p>
         </div>
         
-        <div class="mt-4 space-y-2">
+        <div class="mt-8 space-y-2">
           <button 
             @click="handleResetSession"
             class="w-full bg-card-bg border border-card-border hover:bg-secondary text-text px-4 py-3 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center group"

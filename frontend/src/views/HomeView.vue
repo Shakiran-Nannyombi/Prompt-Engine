@@ -5,15 +5,40 @@
       <div class="navbar-content">
         <!-- Logo and Brand -->
         <div class="navbar-brand">
-          <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt-Engine Logo" class="logo-icon hidden md:block" />
+          <img src="@/assets/images/logo.svg" alt="Prompt-Engine Logo" class="logo-icon" />
           <span class="brand-name">Prompt-Engine</span>
         </div>
         
-        <!-- Mobile Menu Button -->
+        <div class="navbar-links hidden md:flex">
+          <RouterLink to="/" class="nav-link">Home</RouterLink>
+          <RouterLink to="/coach" class="nav-link">Coach</RouterLink>
+          <RouterLink to="/refiner" class="nav-link">Refiner</RouterLink>
+          <RouterLink to="/about" class="nav-link">Docs</RouterLink>
+        </div>
+
+
+        <div class="navbar-actions-wrapper flex items-center justify-end flex-1">
+          <div class="navbar-actions hidden md:flex">
+            <button @click="toggleTheme" class="theme-toggle" :aria-label="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+              <svg v-if="!isDarkMode" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+              </svg>
+              <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+            <RouterLink to="/tutorials" class="navbar-cta">
+              Tutorials
+            </RouterLink>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Toggle (Always Outside hidden desktop actions) -->
         <button 
           @click="toggleMobileMenu" 
-          class="mobile-menu-toggle md:hidden"
-          aria-label="Toggle mobile menu"
+          class="menu-toggle md:hidden"
+          aria-label="Toggle menu"
+          style="z-index: 10001;"
         >
           <svg v-if="!showMobileMenu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -22,70 +47,50 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
+      </div>
 
-        <!-- Desktop Links -->
-        <div class="navbar-links hidden md:flex">
-          <RouterLink to="/" class="nav-link">Home</RouterLink>
-          <RouterLink to="/coach" class="nav-link">Coach</RouterLink>
-          <RouterLink to="/refiner" class="nav-link">Refiner</RouterLink>
-          <RouterLink to="/about" class="nav-link">Documentation</RouterLink>
+    </nav>
+
+    <!-- Mobile Menu (Outside nav to break out of transform context) -->
+    <Transition
+      @enter="onMenuEnter"
+      @leave="onMenuLeave"
+    >
+      <div v-if="showMobileMenu" class="mobile-menu md:hidden fixed inset-0 z-[1000000] flex flex-col">
+        <div class="mobile-menu-header p-4 border-b border-card-border flex items-center justify-between">
+          <div class="navbar-brand">
+            <img src="@/assets/images/logo.svg" alt="Prompt-Engine Logo" class="logo-icon" />
+            <span class="brand-name">Prompt-Engine</span>
+          </div>
+          <button @click="showMobileMenu = false" class="p-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-
-        <!-- Theme Toggle and CTA Button (Desktop) -->
-        <div class="navbar-actions hidden md:flex">
-          <button @click="toggleTheme" class="theme-toggle" :class="{ 'dark': isDarkMode }">
-            <svg v-if="!isDarkMode" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <div class="mobile-menu-links">
+          <RouterLink to="/" class="mobile-nav-link" @click="showMobileMenu = false">Home</RouterLink>
+          <RouterLink to="/coach" class="mobile-nav-link" @click="showMobileMenu = false">Coach</RouterLink>
+          <RouterLink to="/refiner" class="mobile-nav-link" @click="showMobileMenu = false">Refiner</RouterLink>
+          <RouterLink to="/tutorials" class="mobile-nav-link" @click="showMobileMenu = false">Tutorials</RouterLink>
+          <RouterLink to="/about" class="mobile-nav-link" @click="showMobileMenu = false">Documentation</RouterLink>
+        </div>
+        <div class="mobile-menu-actions">
+          <button @click="toggleTheme" class="mobile-theme-toggle">
+            <span class="mr-2">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+            <svg v-if="!isDarkMode" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
             </svg>
-            <svg v-else class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
             </svg>
           </button>
-          <RouterLink to="/tutorials" class="navbar-cta">
-            Tutorials
+          <RouterLink to="/tutorials" class="mobile-cta" @click="showMobileMenu = false">
+            Try Tutorials
           </RouterLink>
         </div>
       </div>
-
-      <Transition
-        @enter="onMenuEnter"
-        @leave="onMenuLeave"
-      >
-        <div v-if="showMobileMenu" class="mobile-menu md:hidden fixed inset-0 z-[10001] bg-background flex flex-col">
-          <div class="mobile-menu-header p-4 border-b border-card-border flex items-center justify-between">
-            <div class="navbar-brand">
-              <img :src="isDarkMode ? logoDark : logoLight" alt="Prompt-Engine Logo" class="logo-icon" />
-              <span class="brand-name">Prompt-Engine</span>
-            </div>
-            <button @click="showMobileMenu = false" class="p-2">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <div class="mobile-menu-links">
-            <RouterLink to="/" class="mobile-nav-link" @click="showMobileMenu = false">Home</RouterLink>
-            <RouterLink to="/coach" class="mobile-nav-link" @click="showMobileMenu = false">Coach</RouterLink>
-            <RouterLink to="/refiner" class="mobile-nav-link" @click="showMobileMenu = false">Refiner</RouterLink>
-            <RouterLink to="/about" class="mobile-nav-link" @click="showMobileMenu = false">Documentation</RouterLink>
-          </div>
-          <div class="mobile-menu-actions">
-            <button @click="toggleTheme" class="mobile-theme-toggle">
-              <span class="mr-2">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
-              <svg v-if="!isDarkMode" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
-              </svg>
-              <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
-              </svg>
-            </button>
-            <RouterLink to="/tutorials" class="mobile-cta" @click="showMobileMenu = false">
-              Try Tutorials
-            </RouterLink>
-          </div>
-        </div>
-      </Transition>
-    </nav>
+    </Transition>
 
     <!-- Hero Section 1 -->
     <div class="hero-wrapper">
@@ -332,17 +337,16 @@
 
     <!-- Hero Section 4 - Call to Action -->
     <div class="hero-section-scrollable">
-      <div class="cta-content" id="vanta-cta">
-        <div class="cta-text">
-          <h1 class="cta-title">Unleash your ideas.<br><span class="cta-highlight">Work 10x faster.</span></h1>
-          <p class="cta-description">Start your free trial today and see why thousands trust our AI to work smarter, faster, and better.</p>
-          <RouterLink to="/register" class="cta-button">
-            Get Started for Free
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-            </svg>
-          </RouterLink>
-        </div>
+      <div class="cta-content" id="vanta-cta"></div>
+      <div class="cta-text">
+        <h1 class="cta-title">Unleash your ideas.<br><span class="cta-highlight">Work 10x faster.</span></h1>
+        <p class="cta-description">Start your free trial today and see why thousands trust our AI to work smarter, faster, and better.</p>
+        <RouterLink to="/register" class="cta-button">
+          Get Started for Free
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+          </svg>
+        </RouterLink>
       </div>
     </div>
 
@@ -439,8 +443,7 @@
 import { RouterLink } from 'vue-router'
 import '@/assets/styles/HomeView.css'
 import { onMounted, onUnmounted, ref } from 'vue'
-import logoLight from '@/assets/images/logoLight.png'
-import logoDark from '@/assets/images/logoDark.png'
+import gsap from 'gsap'
 
 // Theme toggle
 const isDarkMode = ref(false)
@@ -453,7 +456,7 @@ const toggleMobileMenu = () => {
 const onMenuEnter = (el, done) => {
   gsap.fromTo(el,
     { y: '-100%', opacity: 0 },
-    { y: '0%', opacity: 1, duration: 0.5, ease: 'power3.out', onComplete: done }
+    { y: '0%', opacity: 1, duration: 0.4, ease: 'power2.out', onComplete: done }
   )
 }
 
@@ -461,8 +464,8 @@ const onMenuLeave = (el, done) => {
   gsap.to(el, {
     y: '-100%',
     opacity: 0,
-    duration: 0.4,
-    ease: 'power3.in',
+    duration: 0.3,
+    ease: 'power2.in',
     onComplete: done
   })
 }

@@ -12,7 +12,7 @@
 
     <!-- Messages Container -->
     <div class="chat-messages flex-1 overflow-hidden relative">
-      <div class="max-w-3xl mx-auto h-full w-full">
+      <div class="max-w-4xl mx-auto h-full w-full px-4 md:px-8">
         <!-- Empty State with Welcome Screen -->
         <div v-if="messages.length === 0 && !isLoading" class="h-full flex items-center justify-center animate-fade-in text-center p-8">
           <div v-if="variant === 'refiner'" class="max-w-md space-y-6">
@@ -77,9 +77,8 @@
     </div>
 
     <!-- Input Area -->
-    <!-- Input Area -->
-    <div class="chat-input p-4 bg-background border-t border-card-border">
-      <div class="max-w-3xl mx-auto w-full">
+    <div class="chat-input p-4 pt-10 bg-gradient-to-t from-background via-background/90 to-transparent">
+      <div class="max-w-4xl mx-auto w-full px-4 md:px-8">
         <UnifiedChatInput
           :disabled="isLoading"
           :placeholder="inputPlaceholder"
