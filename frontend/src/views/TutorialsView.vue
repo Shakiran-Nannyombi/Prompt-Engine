@@ -169,25 +169,41 @@
 
       <div class="tips-grid">
         <div class="tip-card">
-          <div class="tip-icon">💡</div>
+          <div class="tip-icon">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+          </div>
           <h3 class="tip-title">Be Specific</h3>
           <p class="tip-description">The more specific your input, the better the AI can help you craft the perfect prompt</p>
         </div>
 
         <div class="tip-card">
-          <div class="tip-icon">🎯</div>
+          <div class="tip-icon">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
           <h3 class="tip-title">Define Your Goal</h3>
           <p class="tip-description">Clearly state what you want to achieve with your prompt for targeted results</p>
         </div>
 
         <div class="tip-card">
-          <div class="tip-icon">🔄</div>
+          <div class="tip-icon">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+          </div>
           <h3 class="tip-title">Iterate & Refine</h3>
           <p class="tip-description">Don't settle for the first version - use Refiner to continuously improve</p>
         </div>
 
         <div class="tip-card">
-          <div class="tip-icon">📝</div>
+          <div class="tip-icon">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
           <h3 class="tip-title">Add Context</h3>
           <p class="tip-description">Include relevant background information to help the AI understand your needs</p>
         </div>
@@ -234,10 +250,80 @@
       </RouterLink>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <p>© 2025 Prompt-Engine. All rights reserved.</p>
-    </footer>
+    <!-- Footer Section -->
+    <div class="footer-section">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3 class="footer-title">Join Our Newsletter</h3>
+          <div class="newsletter-form">
+            <input type="email" placeholder="Enter Your mail" class="newsletter-input">
+            <button class="newsletter-button">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+              </svg>
+            </button>
+          </div>
+          <p class="newsletter-disclaimer">* Will send you weekly updates for your better prompt management.</p>
+        </div>
+        
+        <div class="footer-column">
+          <h3 class="footer-title">Pages</h3>
+          <ul class="footer-links">
+            <li><RouterLink to="/" class="footer-link">Home</RouterLink></li>
+            <li><RouterLink to="/coach" class="footer-link">Coach</RouterLink></li>
+            <li><RouterLink to="/refiner" class="footer-link">Refiner</RouterLink></li>
+            <li><RouterLink to="/tutorials" class="footer-link">Tutorials</RouterLink></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3 class="footer-title">Resources</h3>
+          <ul class="footer-links">
+            <li><RouterLink to="/docs" class="footer-link">Documentation</RouterLink></li>
+            <li><a href="https://github.com/Shakiran-Nannyombi/Prompt-Engine" target="_blank" class="footer-link">GitHub Repository</a></li>
+            <li><a href="https://github.com/Shakiran-Nannyombi/Prompt-Engine/issues" target="_blank" class="footer-link">Report Issues</a></li>
+            <li><a href="https://github.com/Shakiran-Nannyombi/Prompt-Engine/blob/main/LICENSE" target="_blank" class="footer-link">License</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3 class="footer-title">Social</h3>
+          <ul class="footer-links">
+            <li><a href="https://github.com/Shakiran-Nannyombi/Prompt-Engine" target="_blank" class="footer-link social-link">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              GitHub
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+              </svg>
+            </a></li>
+            <li><a href="#" class="footer-link social-link">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              Twitter
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+              </svg>
+            </a></li>
+            <li><a href="#" class="footer-link social-link">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+              LinkedIn
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+              </svg>
+            </a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p class="copyright">© Copyright 2025 Prompt-Engine All Rights Reserved</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -400,6 +486,7 @@ onUnmounted(() => {
   font-weight: 950;
   letter-spacing: -0.05em;
   background: linear-gradient(135deg, #f60968, #3b82f6);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 1.5rem;
@@ -675,8 +762,15 @@ onUnmounted(() => {
 }
 
 .tip-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--color-primary-rgb, 99, 102, 241), 0.1);
+  border-radius: 1rem;
+  color: var(--color-primary);
+  margin: 0 auto 1rem;
 }
 
 .tip-title {
@@ -779,12 +873,156 @@ onUnmounted(() => {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Footer */
-.footer {
-  padding: 2rem;
-  text-align: center;
-  opacity: 0.6;
+/* Footer Section */
+.footer-section {
+  background: var(--color-secondary);
+  padding: 4rem 2rem 0;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  margin-top: 5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.footer-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.newsletter-input::placeholder {
+  color: var(--color-text);
+  opacity: 0.5;
+}
+
+.newsletter-button {
+  padding: 0.75rem;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newsletter-button:hover {
+  background: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.newsletter-disclaimer {
+  font-size: 0.8rem;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-link {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-link:hover {
+  color: var(--color-primary);
+  transform: translateX(5px);
+}
+
+.social-link {
+  justify-content: space-between;
+}
+
+.social-link svg:last-child {
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover svg:last-child {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Responsive Design for CTA and Footer */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+  }
+
+  .footer-column {
+    align-items: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+
+  .newsletter-form {
+    width: 100%;
+    max-width: 400px;
+  }
 }
 
 /* Responsive */
