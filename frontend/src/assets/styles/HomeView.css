@@ -26,6 +26,27 @@ body,
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.navbar:not(.scrolled) .nav-link {
+  color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+.navbar:not(.scrolled) .brand-name {
+  color: #0f172a !important;
+}
+
+.dark .navbar:not(.scrolled) .nav-link,
+.dark .navbar:not(.scrolled) .brand-name,
+.dark .navbar:not(.scrolled) .theme-toggle {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.navbar:not(.scrolled) .theme-toggle {
+  color: #0f172a !important;
+  opacity: 1 !important;
+}
+
 /* Navbar when scrolling */
 .navbar.scrolled {
   background: rgba(255, 255, 255, 0.9);
@@ -33,7 +54,8 @@ body,
 }
 
 .navbar.scrolled .brand-name,
-.navbar.scrolled .nav-link {
+.navbar.scrolled .nav-link,
+.navbar.scrolled .theme-toggle {
   color: #1a1a1a !important;
 }
 

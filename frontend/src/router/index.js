@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/DocsView.vue'),
+      component: () => import('../views/AboutView.vue'),
     },
     {
       path: '/register',

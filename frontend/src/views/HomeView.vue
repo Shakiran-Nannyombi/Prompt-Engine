@@ -13,7 +13,7 @@
           <RouterLink to="/" class="nav-link">Home</RouterLink>
           <RouterLink to="/coach" class="nav-link">Coach</RouterLink>
           <RouterLink to="/refiner" class="nav-link">Refiner</RouterLink>
-          <RouterLink to="/about" class="nav-link">Docs</RouterLink>
+          <RouterLink to="/about" class="nav-link">About</RouterLink>
         </div>
 
 
@@ -73,7 +73,7 @@
           <RouterLink to="/coach" class="mobile-nav-link" @click="showMobileMenu = false">Coach</RouterLink>
           <RouterLink to="/refiner" class="mobile-nav-link" @click="showMobileMenu = false">Refiner</RouterLink>
           <RouterLink to="/tutorials" class="mobile-nav-link" @click="showMobileMenu = false">Tutorials</RouterLink>
-          <RouterLink to="/about" class="mobile-nav-link" @click="showMobileMenu = false">Documentation</RouterLink>
+          <RouterLink to="/about" class="mobile-nav-link" @click="showMobileMenu = false">About Us</RouterLink>
         </div>
         <div class="mobile-menu-actions">
           <button @click="toggleTheme" class="mobile-theme-toggle">
