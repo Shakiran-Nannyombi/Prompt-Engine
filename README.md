@@ -135,7 +135,7 @@ The Prompt Engine is built with a modern full-stack architecture:
 ## Live Deployment
 
 - **Backend:** [https://prompt-engine.onrender.com](https://prompt-engine.onrender.com)
-- **Frontend:** [To be updated]
+- **Frontend:** [https://prompt-engine-one.vercel.app/](https://prompt-engine-one.vercel.app/)
 
 ## Getting Started
 
