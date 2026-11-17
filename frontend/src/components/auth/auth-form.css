@@ -1,0 +1,53 @@
+.auth-form {
+  display: grid;
+  gap: 1.15rem;
+  margin-top: 1.75rem;
+}
+.demo-note {
+  padding: 0.75rem 0.9rem;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  background: var(--sheet-tint);
+  border-left: 3px solid var(--pencil);
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
+}
+.form-row {
+  display: grid;
+  gap: 0.4rem;
+}
+.label {
+  font-size: 0.925rem;
+  font-weight: 600;
+}
+.field[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+.field-error {
+  font-size: 0.875rem;
+  color: var(--danger);
+}
+.field-hint {
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+}
+.form-error {
+  padding: 0.7rem 0.9rem;
+  font-size: 0.925rem;
+  color: var(--danger);
+  border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+  border-radius: var(--radius-control);
+}
+.submit {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+.switch {
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+.switch a {
+  color: var(--pencil);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
