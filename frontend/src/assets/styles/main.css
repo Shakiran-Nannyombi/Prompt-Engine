@@ -1,242 +1,270 @@
 @import './base.css';
-
-/* Tailwind CSS directives */
 @import 'tailwindcss';
 
-/* CSS Custom Properties for Theme Colors */
+/* Dark mode follows the `dark` class on <html> (set by useTheme + index.html). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * "Editor's desk" design tokens.
+ * A prompt is treated as a manuscript under edit: ink on paper,
+ * blue-pencil edits, highlighter marks and margin notes.
+ */
 :root {
-  /* Core Palette (Hex for reliability) */
-  --color-primary: #f60968;
-  --color-secondary: #f1f5f9;
-  --color-accent: #94a3b8;
-  /* Slate-400 for contrast */
-  --color-background: #ffffff;
-  --color-text: #0f172a;
-
-  /* Component Base */
-  --color-card-bg: #ffffff;
-  --color-card-border: #e2e8f0;
-  --color-input-bg: #f8fafc;
-  --color-input-border: #cbd5e1;
-
-  /* Functional Colors */
-  --color-success: #10b981;
-  --color-error: #ef4444;
-
-  /* Secondary Component Colors */
-  --color-scrollbar-track: #f8fafc;
-  --color-scrollbar-thumb: #94a3b8;
-  --color-selection-bg: #fde6eb;
-  --color-selection-text: #800530;
+  --paper: #f4f6fb;
+  --sheet: #ffffff;
+  --sheet-tint: #eceff7;
+  --ink: #1b1f3b;
+  --ink-muted: #5b6178;
+  --pencil: #2f5bea;
+  --pencil-strong: #2449c4;
+  --on-pencil: #ffffff;
+  --highlight: #f5e663;
+  --rule: #d9dde8;
+  --danger: #c2334d;
+  --ok: #1f8a5b;
+  --lift: 0 1px 0 rgba(27, 31, 59, 0.04), 0 18px 40px -24px rgba(27, 31, 59, 0.35);
 }
 
-/* Dark Mode Colors - Premium Obsidian Aesthetic */
 .dark {
-  --color-primary: #f60968;
-  --color-secondary: #1e293b;
-  --color-accent: #334155;
-  --color-background: #020617;
-  --color-text: #f1f5f9;
-
-  --color-card-bg: #0f172a;
-  --color-card-border: #1e293b;
-  --color-input-bg: #020617;
-  --color-input-border: #334155;
-
-  --color-scrollbar-track: #020617;
-  --color-scrollbar-thumb: #334155;
-  --color-selection-bg: #4e2d5c;
-  --color-selection-text: #f1f5f9;
+  --paper: #12142a;
+  --sheet: #1b1e38;
+  --sheet-tint: #23274a;
+  --ink: #e8eaf4;
+  --ink-muted: #a3a8c3;
+  --pencil: #7f9cff;
+  --pencil-strong: #a3b8ff;
+  --on-pencil: #0f1230;
+  --highlight: #e9d85a;
+  --rule: #2c3054;
+  --danger: #ff7a90;
+  --ok: #5fd6a0;
+  --lift: 0 1px 0 rgba(0, 0, 0, 0.2), 0 24px 48px -24px rgba(0, 0, 0, 0.7);
 }
 
-#app {
-  max-width: 100vw;
-  margin: 0;
-  padding: 0;
-  font-weight: normal;
-  min-height: 100vh;
-  background-color: rgb(var(--color-background-rgb));
-  color: rgb(var(--color-text-rgb));
+@theme inline {
+  --font-sans: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Source Serif 4', ui-serif, Georgia, serif;
+
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-sheet-tint: var(--sheet-tint);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-pencil: var(--pencil);
+  --color-pencil-strong: var(--pencil-strong);
+  --color-on-pencil: var(--on-pencil);
+  --color-highlight: var(--highlight);
+  --color-rule: var(--rule);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+
+  /* Legacy names still used in older components; mapped onto the new tokens. */
+  --color-primary: var(--pencil);
+  --color-secondary: var(--sheet-tint);
+  --color-accent: var(--rule);
+  --color-background: var(--paper);
+  --color-text: var(--ink);
+  --color-card-bg: var(--sheet);
+  --color-card-border: var(--rule);
+  --color-input-bg: var(--sheet);
+  --color-input-border: var(--rule);
+  --color-success: var(--ok);
+  --color-error: var(--danger);
+
+  --radius-control: 6px;
+  --radius-sheet: 14px;
+  --shadow-lift: var(--lift);
 }
 
-/* Base Styles */
+html {
+  background-color: var(--paper);
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+p {
+  text-wrap: pretty;
 }
 
-::-webkit-scrollbar-track {
-  background-color: rgb(var(--color-scrollbar-track-rgb));
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--pencil);
+  outline-offset: 2px;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: rgb(var(--color-scrollbar-thumb-rgb));
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-accent);
-}
-
-/* Selection styling */
 ::selection {
-  background-color: var(--color-selection-bg);
-  color: var(--color-selection-text);
+  background-color: var(--highlight);
+  color: #1b1f3b;
 }
 
-/* Simple utility classes without @apply */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 0.5rem;
-  background-color: var(--color-primary);
-  color: white;
-  transition: all 200ms;
-  text-decoration: none;
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--rule);
+  border-radius: 10px;
+  border: 2px solid var(--paper);
 }
 
-.btn-primary:hover {
-  background-color: #e0085a;
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 0.5rem;
-  background-color: var(--color-secondary);
-  color: var(--color-text);
-  transition: all 200ms;
-  text-decoration: none;
-}
-
-.btn-secondary:hover {
-  background-color: var(--color-accent);
-}
-
-.card-base {
-  background-color: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  transition: all 200ms;
-}
-
-.card-elevated {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-}
-
-.card-elevated:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-}
-
-.card-interactive {
-  cursor: pointer;
-}
-
-.card-interactive:hover {
-  transform: scale(1.02);
-}
-
-.container-wide {
+/* Shared building blocks */
+.wrap {
+  width: 100%;
   max-width: 72rem;
-  margin: 0 auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .wrap {
+    padding-inline: 2rem;
+  }
 }
 
-.flex-center {
-  display: flex;
+.btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.15rem;
+  border-radius: var(--radius-control);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
+  white-space: nowrap;
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background-color: var(--pencil);
+  color: var(--on-pencil);
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--pencil-strong);
+}
+.btn-secondary {
+  background-color: var(--sheet);
+  color: var(--ink);
+  border-color: var(--rule);
+}
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--ink-muted);
+}
+.btn-ghost {
+  background-color: transparent;
+  color: var(--ink);
+}
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--sheet-tint);
+}
+
+.sheet {
+  background-color: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sheet);
+}
+
+.field {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.8rem;
+  background-color: var(--sheet);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  transition: border-color 150ms, box-shadow 150ms;
+}
+.field::placeholder {
+  color: var(--ink-muted);
+  opacity: 0.8;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--pencil);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pencil) 22%, transparent);
+}
+
+/* Serif "manuscript" text: prompts, refined output, coach notes */
+.prose-manuscript {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--ink);
+  max-width: 68ch;
 }
 
 .loading-dots {
   display: inline-flex;
   gap: 0.25rem;
 }
-
 .loading-dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.4rem;
+  height: 0.4rem;
   background-color: currentColor;
   border-radius: 50%;
-  animation: bounce 1s infinite;
+  animation: dot-pulse 1s infinite ease-in-out;
 }
-
 .loading-dot:nth-child(2) {
-  animation-delay: 0.1s;
+  animation-delay: 0.15s;
 }
-
 .loading-dot:nth-child(3) {
-  animation-delay: 0.2s;
+  animation-delay: 0.3s;
+}
+@keyframes dot-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
-/* Theme-specific utility classes */
-.bg-theme-background {
-  background-color: var(--color-background);
-}
-
-.text-theme-text {
-  color: var(--color-text);
-}
-
-.bg-theme-primary {
-  background-color: var(--color-primary);
-}
-
-.bg-theme-secondary {
-  background-color: var(--color-secondary);
-}
-
-.bg-theme-accent {
-  background-color: var(--color-accent);
-}
-
-.border-theme-accent {
-  border-color: var(--color-accent);
-}
-
-/* Input styling */
-.input-theme {
-  background-color: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
-  color: var(--color-text);
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  transition: all 200ms;
-}
-
-.input-theme:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(246, 9, 104, 0.1);
-}
-
-/* Dark mode body styling */
-body {
-  background-color: var(--color-background);
-  color: var(--color-text);
-  transition: background-color 200ms, color 200ms;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
