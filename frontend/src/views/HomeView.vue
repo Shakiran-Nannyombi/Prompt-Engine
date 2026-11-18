@@ -160,6 +160,9 @@
       </div>
     </div>
 
+    <!-- One shared blur layer behind the content sections (no seams between them) -->
+    <div class="content-blur" ref="contentBlur" aria-hidden="true"></div>
+
     <!-- Hero Section 2  -->
     <div class="hero-section-scrollable features-section">
       <div class="hero-content">
@@ -433,6 +436,7 @@ const toggleTheme = () => {
 
 // Typewriter animation
 const typewriterText = ref(null)
+const contentBlur = ref(null)
 let typewriterInterval = null
 let currentText = ''
 let currentIndex = 0
@@ -613,6 +617,7 @@ onMounted(() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const vantaHero = document.getElementById('vanta-hero')
   const navbar = document.querySelector('.navbar')
+  const firstSection = document.querySelector('.hero-section-scrollable')
   let ticking = false
 
   const update = () => {
@@ -624,6 +629,11 @@ onMounted(() => {
       vantaHero.style.transform = `scale(${(1.2 - progress * 0.2).toFixed(4)})`
     }
     if (navbar) navbar.classList.toggle('scrolled', y > 50)
+    if (contentBlur.value && firstSection) {
+      // The blur starts at the top edge of the first section and follows it up the screen
+      const top = Math.max(0, Math.min(firstSection.getBoundingClientRect().top, window.innerHeight))
+      contentBlur.value.style.transform = `translateY(${top}px)`
+    }
   }
 
   scrollHandler = () => {
