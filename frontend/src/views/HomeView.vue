@@ -114,7 +114,7 @@
                 </svg>
               </RouterLink>
               <RouterLink to="/tutorials" class="hero-btn secondary-btn">
-                Watch Demo
+                See How It Works
               </RouterLink>
             </div>
           </div>
@@ -144,7 +144,7 @@
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
               </div>
-              <h4 class="card-title-small">Proven Results</h4>
+              <h4 class="card-title-small">Works With Any AI</h4>
             </div>
             
             <div class="floating-card-small animated-card">
@@ -153,7 +153,7 @@
                   <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2.5-9H19V1h-2v1H7V1H5v1H4.5C3.67 2 3 2.67 3 3.5v15c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-15c0-.83-.67-1.5-1.5-1.5z"/>
                 </svg>
               </div>
-              <h4 class="card-title-small">Real-time Feedback</h4>
+              <h4 class="card-title-small">Step-by-step Guidance</h4>
             </div>
           </div>
         </div>
@@ -173,91 +173,56 @@
           <h1 class="hero-title">What makes our Prompt-Engine stand out?</h1>
         </div>
         
-        <div class="tabs-container">
-          <div class="tab active">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-            Smart Coaching
-          </div>
-          <div class="tab">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-            </svg>
-            Document Refinement
-          </div>
-          <div class="tab">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
-            Prompt Optimization
-          </div>
-          <div class="tab">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2.5-9H19V1h-2v1H7V1H5v1H4.5C3.67 2 3 2.67 3 3.5v15c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-15c0-.83-.67-1.5-1.5-1.5z"/>
-            </svg>
-            Real-time Results
-          </div>
+        <div class="tabs-container" role="tablist" aria-label="Features">
+          <button
+            v-for="(f, i) in features"
+            :key="f.tab"
+            type="button"
+            role="tab"
+            class="tab"
+            :class="{ active: activeFeature === i }"
+            :aria-selected="activeFeature === i"
+            @click="activeFeature = i"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path :d="f.icon" /></svg>
+            {{ f.tab }}
+          </button>
         </div>
-        
-        <div class="feature-content">
+
+        <div class="feature-content" role="tabpanel">
           <div class="feature-text">
-            <h2 class="feature-main-title">Intelligent prompt coaching that delivers results</h2>
-            <p class="feature-main-description">Our Prompt-Engine doesn't just create prompts—it coaches you through a proven 4-stage process. Whether you're a beginner or expert, it provides step-by-step guidance, applies established frameworks, and delivers optimized prompts for your specific use case.</p>
-            
+            <h2 class="feature-main-title">{{ currentFeature.title }}</h2>
+            <p class="feature-main-description">{{ currentFeature.description }}</p>
+
             <div class="feature-items">
-              <div class="feature-item">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-                Proven 4-stage coaching process
-              </div>
-              <div class="feature-item">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-                Document-based prompt refinement
+              <div v-for="(point, i) in currentFeature.points" :key="point" class="feature-item">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path :d="i === 0 ? icons.star : icons.check" /></svg>
+                {{ point }}
               </div>
             </div>
           </div>
-          
+
           <div class="feature-visual">
             <div class="visual-cards">
-              <div class="visual-card">
+              <div v-for="card in currentFeature.example" :key="card.label" class="visual-card">
                 <div class="card-content">
-                  <span class="card-label">Input:</span>
-                  <span class="card-text">"Write a blog post about AI"</span>
-                </div>
-              </div>
-              <div class="visual-card">
-                <div class="card-content">
-                  <span class="card-label">Coaching:</span>
-                  <span class="card-text">"Let's add context, target audience, and specific goals to make this more effective"</span>
-                </div>
-              </div>
-              <div class="visual-card">
-                <div class="card-content">
-                  <span class="card-label">Output:</span>
-                  <span class="card-text">"Write a comprehensive blog post about AI for small business owners, focusing on practical applications and ROI"</span>
+                  <span class="card-label">{{ card.label }}:</span>
+                  <span class="card-text">"{{ card.text }}"</span>
                 </div>
               </div>
             </div>
             <div class="avatar-group">
-              <div class="avatar">
-                <svg class="avatar-icon" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
-              </div>
-              <div class="avatar active">
-                <svg class="avatar-icon" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-              </div>
-              <div class="avatar">
-                <svg class="avatar-icon" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-              </div>
+              <button
+                v-for="(f, i) in features"
+                :key="f.tab"
+                type="button"
+                class="avatar"
+                :class="{ active: activeFeature === i }"
+                :aria-label="`Show ${f.tab}`"
+                @click="activeFeature = i"
+              >
+                <svg class="avatar-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path :d="f.icon" /></svg>
+              </button>
             </div>
           </div>
         </div>
@@ -274,33 +239,40 @@
             </svg>
             How it works
           </button>
-          <h1 class="hero-title">How our Prompt-Engine works in<br><span class="title-highlight">3 simple steps</span></h1>
+          <h1 class="hero-title">How our Prompt-Engine works in <br><span class="title-highlight">3 simple steps</span></h1>
         </div>
         
         <div class="steps-content">
           <div class="step-panel animated-panel">
-            <div class="step-number">1</div>
+            <div class="step-number">{{ activeStep + 1 }}</div>
             <div class="step-content">
-              <h2 class="step-title">Ask anything</h2>
-              <p class="step-description">Just type your question, task, or idea—like "Draft a client email," "Summarize this blog," or "Plan my week."</p>
-              
+              <h2 class="step-title">{{ currentStep.title }}</h2>
+              <p class="step-description">{{ currentStep.description }}</p>
+
               <div class="step-features">
-                <div class="step-feature animated-feature">
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                  </svg>
-                  Natural language input—no special commands.
+                <div v-for="(point, i) in currentStep.points" :key="point" class="step-feature animated-feature">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path :d="i === 0 ? icons.check : icons.chat" /></svg>
+                  {{ point }}
                 </div>
-                <div class="step-feature animated-feature">
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-                  </svg>
-                  Smart prompt suggestions to guide you.
-                </div>
+              </div>
+
+              <div class="step-switcher" role="tablist" aria-label="Steps">
+                <button
+                  v-for="(st, i) in steps"
+                  :key="st.title"
+                  type="button"
+                  role="tab"
+                  class="step-dot"
+                  :class="{ active: activeStep === i }"
+                  :aria-selected="activeStep === i"
+                  @click="activeStep = i"
+                >
+                  {{ i + 1 }}. {{ st.short }}
+                </button>
               </div>
             </div>
           </div>
-          
+
           <div class="chat-example-panel animated-panel">
             <div class="chat-header">
               <div class="chat-logo">
@@ -317,7 +289,7 @@
             
             <div class="chat-input-area">
               <div class="input-field">
-                <span class="input-text">How do I create an effective prompt for content writing?</span>
+                <span class="input-text">{{ currentStep.chat }}</span>
                 <div class="input-tags">
                   <span class="tag">Content</span>
                   <span class="tag">Writing</span>
@@ -342,8 +314,8 @@
     <div class="hero-section-scrollable">
       <div class="cta-content" id="vanta-cta"></div>
       <div class="cta-text">
-        <h1 class="cta-title">Unleash your ideas.<br><span class="cta-highlight">Work 10x faster.</span></h1>
-        <p class="cta-description">Start your free trial today and see why thousands trust our AI to work smarter, faster, and better.</p>
+        <h1 class="cta-title">Unleash your ideas. <br><span class="cta-highlight">Write better prompts.</span></h1>
+        <p class="cta-description">It's free to use. Bring a rough idea and leave with a clear, structured prompt you can use in any AI tool.</p>
         <RouterLink to="/register" class="cta-button">
           Get Started for Free
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -364,7 +336,7 @@
 import { RouterLink, useRouter } from 'vue-router'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import '@/assets/styles/HomeView.css'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/useAuthStore'
 import gsap from 'gsap'
 
@@ -376,6 +348,95 @@ const handleLogout = () => {
   authStore.logout()
   router.push('/')
 }
+
+
+// Feature tabs and "how it works" steps
+const icons = {
+  star: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+  doc: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
+  check: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
+  bolt: 'M7 2v11h3v9l7-12h-4l4-8z',
+  chat: 'M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z',
+}
+
+const features = [
+  {
+    tab: 'Smart Coaching',
+    icon: icons.star,
+    title: 'Coaching that teaches you as you go',
+    description: 'The Coach walks you through a structured process (task, context, references, then the final prompt) and explains each step, so you get better at prompting every time you use it.',
+    points: ['Guided, step-by-step process', 'Explains why each change helps'],
+    example: [
+      { label: 'Input', text: 'Write a blog post about AI' },
+      { label: 'Coaching', text: 'Who is it for, and what should they take away from it?' },
+      { label: 'Output', text: 'Write a 600-word blog post for small-business owners on three practical ways to use AI in customer support.' },
+    ],
+  },
+  {
+    tab: 'Instant Refinement',
+    icon: icons.doc,
+    title: 'Paste a prompt, get a sharper one back',
+    description: 'The Refiner rewrites your prompt in one pass using proven frameworks, adding a role, a clear audience and the format you need.',
+    points: ['Framework-based rewrites', 'Copy the result in one click'],
+    example: [
+      { label: 'Input', text: 'Summarise this report' },
+      { label: 'Refiner', text: 'Adds a role, a length and a structure' },
+      { label: 'Output', text: 'You are an analyst briefing a busy manager. Summarise the report in five bullet points, leading with the decision it asks for.' },
+    ],
+  },
+  {
+    tab: 'Prompt Optimization',
+    icon: icons.check,
+    title: 'Shorter prompts that say more',
+    description: "Long prompts aren't better prompts. Prompt-Engine cuts the filler and backstory the model doesn't need, and keeps the instructions that change the answer.",
+    points: ['Removes padding and repetition', 'Keeps what matters to the model'],
+    example: [
+      { label: 'Input', text: "I've been working on this project for a while and wondered if you could maybe help me write an email to my team about it..." },
+      { label: 'Optimizing', text: 'Cut the backstory, keep the ask' },
+      { label: 'Output', text: 'Write a short, friendly email telling my team the launch moves to Friday, and ask them to confirm by Wednesday.' },
+    ],
+  },
+  {
+    tab: 'Ready-to-use Results',
+    icon: icons.bolt,
+    title: 'Prompts you can use straight away',
+    description: 'Every result is a complete prompt you can paste into ChatGPT, Claude, Gemini or any other AI tool. No special syntax and no lock-in.',
+    points: ['Works with any AI model', 'Copy or download in one click'],
+    example: [
+      { label: 'Input', text: 'Explain recursion' },
+      { label: 'Result', text: 'Adds a clear role, level and format' },
+      { label: 'Output', text: 'You are a patient tutor. Explain recursion to a beginner in under 200 words, with one Python example and one common mistake to avoid.' },
+    ],
+  },
+]
+const activeFeature = ref(0)
+const currentFeature = computed(() => features[activeFeature.value])
+
+const steps = [
+  {
+    short: 'Ask',
+    title: 'Ask anything',
+    description: 'Just type your question, task or idea, like "Draft a client email", "Summarise this blog" or "Plan my week".',
+    points: ['Natural language input, no special commands.', 'Example prompts to get you started.'],
+    chat: 'How do I create an effective prompt for content writing?',
+  },
+  {
+    short: 'Refine',
+    title: 'Get coached or refined',
+    description: 'Choose the Coach to build your prompt step by step, or the Refiner to rewrite it for you in one go.',
+    points: ['The Coach asks the right questions.', 'The Refiner applies proven frameworks.'],
+    chat: 'Who is the audience, and what format should the answer take?',
+  },
+  {
+    short: 'Use',
+    title: 'Copy and use it',
+    description: 'Take the finished prompt to any AI tool and get a clearer, more useful answer the first time.',
+    points: ['Works with any chat model.', 'Copy or download it in one click.'],
+    chat: 'Write a 600-word blog post for small-business owners on using AI in customer support.',
+  },
+]
+const activeStep = ref(0)
+const currentStep = computed(() => steps[activeStep.value])
 
 // Theme toggle
 const isDarkMode = ref(false)
@@ -423,7 +484,7 @@ let currentText = ''
 let currentIndex = 0
 let isDeleting = false
 
-const fullText = 'Meet your new AI-Powered prompt engineering Agents'
+const fullText = 'Meet your new AI-Powered prompt engineering agents'
 const typingSpeed = 100 // milliseconds per character
 const deletingSpeed = 50 // milliseconds per character
 const pauseTime = 5000 // 5 seconds pause
@@ -431,7 +492,6 @@ const pauseTime = 5000 // 5 seconds pause
 let vantaEffect = null
 let vantaCtaEffect = null
 let scrollHandler = null
-let navbarScrollHandler = null
 
 // Function to reinitialize VANTA effects with current theme
 const reinitializeVantaEffects = () => {
@@ -470,9 +530,16 @@ const initializeVantaEffects = () => {
     })
   }
 
-  // Initialize VANTA.TOPOLOGY for CTA section
-  if (window.VANTA && window.VANTA.TOPOLOGY) {
-    const isDarkMode = document.documentElement.classList.contains('dark')
+  // CTA background is created lazily by the IntersectionObserver below
+  if (ctaVisible) initCtaEffect()
+}
+
+// The topology effect is CPU-heavy, so it only runs while the CTA is near the screen
+let ctaVisible = false
+let ctaObserver = null
+const initCtaEffect = () => {
+  if (vantaCtaEffect || !window.VANTA || !window.VANTA.TOPOLOGY) return
+  const isDarkMode = document.documentElement.classList.contains('dark')
     vantaCtaEffect = window.VANTA.TOPOLOGY({
       el: "#vanta-cta",
       mouseControls: true,
@@ -485,7 +552,6 @@ const initializeVantaEffects = () => {
       color: isDarkMode ? 0x4e5296 : 0xc0f4a,
       backgroundColor: isDarkMode ? 0x222 : 0x7f85e8
     })
-  }
 }
 
 // Typewriter animation function
@@ -509,8 +575,9 @@ const typeWriter = () => {
     currentIndex++
     
     if (currentText === fullText) {
-      // Wait 5 seconds before starting to delete
-      setTimeout(() => {
+      // Show the full line, then wait before deleting
+      typewriterText.value.innerHTML = fullText.replace('AI-Powered', '<span class="colors-text">AI-Powered</span>')
+      typewriterInterval = setTimeout(() => {
         isDeleting = true
         typeWriter()
       }, pauseTime)
@@ -589,38 +656,50 @@ onMounted(() => {
   }
 
   // Add scroll handler for zoom effect
-  scrollHandler = () => {
-    const scrollY = window.scrollY
-    const vantaHero = document.getElementById('vanta-hero')
-    
-    if (vantaHero) {
-      // Calculate zoom based on scroll position
-      // Start at 1.2x zoom, zoom out to 1.0x as you scroll
-      const maxScroll = window.innerHeight * 2 // Adjust this value to control zoom speed
-      const scrollProgress = Math.min(scrollY / maxScroll, 1)
-      const scale = 1.2 - (scrollProgress * 0.2) // From 1.2 to 1.0
-      
-      vantaHero.style.transform = `scale(${scale})`
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const vantaHero = document.getElementById('vanta-hero')
+  const navbar = document.querySelector('.navbar')
+  let ticking = false
+
+  const update = () => {
+    ticking = false
+    const y = window.scrollY
+    if (vantaHero && !reduceMotion) {
+      // Zoom the hero background from 1.2x to 1x over the first two screens
+      const progress = Math.min(y / (window.innerHeight * 2), 1)
+      vantaHero.style.transform = `scale(${(1.2 - progress * 0.2).toFixed(4)})`
     }
+    if (navbar) navbar.classList.toggle('scrolled', y > 50)
   }
 
-  window.addEventListener('scroll', scrollHandler)
-  
-  // Navbar scroll handler
-  navbarScrollHandler = () => {
-    const navbar = document.querySelector('.navbar')
-    if (navbar) {
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled')
-      } else {
-        navbar.classList.remove('scrolled')
-      }
+  scrollHandler = () => {
+    if (!ticking) {
+      ticking = true
+      requestAnimationFrame(update)
     }
   }
-  
-  window.addEventListener('scroll', navbarScrollHandler)
-  
-  // Start typewriter animation cleanup first to avoid duplicates
+  window.addEventListener('scroll', scrollHandler, { passive: true })
+  update()
+
+  const ctaEl = document.getElementById('vanta-cta')
+  if (ctaEl && 'IntersectionObserver' in window) {
+    ctaObserver = new IntersectionObserver(
+      ([entry]) => {
+        ctaVisible = entry.isIntersecting
+        if (ctaVisible) {
+          initCtaEffect()
+        } else if (vantaCtaEffect) {
+          vantaCtaEffect.destroy()
+          vantaCtaEffect = null
+        }
+      },
+      { rootMargin: '200px 0px' },
+    )
+    ctaObserver.observe(ctaEl)
+  } else {
+    ctaVisible = true
+  }
+
   if (typewriterInterval) clearTimeout(typewriterInterval)
   setTimeout(() => {
     // Reset state for cleaner re-entry
@@ -647,9 +726,9 @@ onUnmounted(() => {
     window.removeEventListener('scroll', scrollHandler)
     scrollHandler = null
   }
-  if (navbarScrollHandler) {
-    window.removeEventListener('scroll', navbarScrollHandler)
-    navbarScrollHandler = null
+  if (ctaObserver) {
+    ctaObserver.disconnect()
+    ctaObserver = null
   }
   
   // Clean up typewriter animation
