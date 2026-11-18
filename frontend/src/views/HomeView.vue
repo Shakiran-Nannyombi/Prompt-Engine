@@ -242,71 +242,24 @@
           <h1 class="hero-title">How our Prompt-Engine works in <br><span class="title-highlight">3 simple steps</span></h1>
         </div>
         
-        <div class="steps-content">
-          <div class="step-panel animated-panel">
-            <div class="step-number">{{ activeStep + 1 }}</div>
-            <div class="step-content">
-              <h2 class="step-title">{{ currentStep.title }}</h2>
-              <p class="step-description">{{ currentStep.description }}</p>
-
-              <div class="step-features">
-                <div v-for="(point, i) in currentStep.points" :key="point" class="step-feature animated-feature">
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path :d="i === 0 ? icons.check : icons.chat" /></svg>
-                  {{ point }}
-                </div>
-              </div>
-
-              <div class="step-switcher" role="tablist" aria-label="Steps">
-                <button
-                  v-for="(st, i) in steps"
-                  :key="st.title"
-                  type="button"
-                  role="tab"
-                  class="step-dot"
-                  :class="{ active: activeStep === i }"
-                  :aria-selected="activeStep === i"
-                  @click="activeStep = i"
-                >
-                  {{ i + 1 }}. {{ st.short }}
-                </button>
-              </div>
+        <ol class="steps-row">
+          <li v-for="(st, i) in steps" :key="st.title" class="step-card">
+            <span class="step-card-no" aria-hidden="true">{{ i + 1 }}</span>
+            <p class="step-card-kicker">Step {{ i + 1 }}</p>
+            <h2 class="step-card-title">{{ st.title }}</h2>
+            <p class="step-card-text">{{ st.description }}</p>
+            <ul class="step-card-points">
+              <li v-for="point in st.points" :key="point">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path :d="icons.check" /></svg>
+                {{ point }}
+              </li>
+            </ul>
+            <div class="step-card-example">
+              <span class="step-card-example-label">{{ st.exampleLabel }}</span>
+              <span class="step-card-example-text">{{ st.chat }}</span>
             </div>
-          </div>
-
-          <div class="chat-example-panel animated-panel">
-            <div class="chat-header">
-              <div class="chat-logo">
-                <div class="logo-circle">P</div>
-              </div>
-              <span class="chat-title">Prompt-Engine</span>
-            </div>
-            
-            <div class="chat-messages">
-              <div class="message-line animated-line"></div>
-              <div class="message-line animated-line"></div>
-              <div class="message-line animated-line"></div>
-            </div>
-            
-            <div class="chat-input-area">
-              <div class="input-field">
-                <span class="input-text">{{ currentStep.chat }}</span>
-                <div class="input-tags">
-                  <span class="tag">Content</span>
-                  <span class="tag">Writing</span>
-                </div>
-              </div>
-              <div class="input-actions">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                  <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                </svg>
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
+          </li>
+        </ol>
       </div>
     </div>
 
@@ -418,25 +371,26 @@ const steps = [
     title: 'Ask anything',
     description: 'Just type your question, task or idea, like "Draft a client email", "Summarise this blog" or "Plan my week".',
     points: ['Natural language input, no special commands.', 'Example prompts to get you started.'],
-    chat: 'How do I create an effective prompt for content writing?',
+    exampleLabel: 'You ask',
+    chat: 'Write a blog post about AI.',
   },
   {
     short: 'Refine',
     title: 'Get coached or refined',
     description: 'Choose the Coach to build your prompt step by step, or the Refiner to rewrite it for you in one go.',
     points: ['The Coach asks the right questions.', 'The Refiner applies proven frameworks.'],
-    chat: 'Who is the audience, and what format should the answer take?',
+    exampleLabel: 'The Coach asks',
+    chat: 'Who is it for, and what should they take away from it?',
   },
   {
     short: 'Use',
     title: 'Copy and use it',
     description: 'Take the finished prompt to any AI tool and get a clearer, more useful answer the first time.',
     points: ['Works with any chat model.', 'Copy or download it in one click.'],
-    chat: 'Write a 600-word blog post for small-business owners on using AI in customer support.',
+    exampleLabel: 'You get',
+    chat: 'Write a 600-word blog post for small-business owners on three practical ways to use AI in customer support.',
   },
 ]
-const activeStep = ref(0)
-const currentStep = computed(() => steps[activeStep.value])
 
 // Theme toggle
 const isDarkMode = ref(false)

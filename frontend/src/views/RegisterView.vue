@@ -26,7 +26,7 @@ const handleRegister = async ({ name, email, password }) => {
 </script>
 
 <template>
-  <AuthLayout title="Create an account" subtitle="Free, and takes a few seconds." image="/register_bg_branded.png">
+  <AuthLayout title="Create an account" subtitle="Free, and takes a few seconds.">
     <RegisterForm :is-loading="isLoading" :error="error" @submit="handleRegister" />
   </AuthLayout>
 </template>
