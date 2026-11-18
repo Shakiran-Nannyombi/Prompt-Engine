@@ -1,13 +1,16 @@
 <script setup>
+/* The Home page's floating navbar, shared by every public page. */
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import gsap from 'gsap'
 import { useTheme } from '@/composables/useTheme'
 import { useAuthStore } from '@/stores/useAuthStore'
-import BrandMark from './BrandMark.vue'
+import logo from '@/assets/images/logo.svg'
 
 const links = [
-  { to: '/refiner', label: 'Refiner' },
+  { to: '/', label: 'Home' },
   { to: '/coach', label: 'Coach' },
+  { to: '/refiner', label: 'Refiner' },
   { to: '/tutorials', label: 'Tutorials' },
   { to: '/about', label: 'About' },
 ]
@@ -17,28 +20,28 @@ const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 
-const menuOpen = ref(false)
 const scrolled = ref(false)
+const showMobileMenu = ref(false)
 
 const onScroll = () => {
-  scrolled.value = window.scrollY > 8
+  scrolled.value = window.scrollY > 50
 }
-const onKey = (e) => {
-  if (e.key === 'Escape') menuOpen.value = false
-}
-
-const signOut = () => {
+const handleLogout = () => {
   authStore.logout()
-  menuOpen.value = false
+  showMobileMenu.value = false
   router.push('/')
 }
+const onMenuEnter = (el, done) => {
+  gsap.fromTo(el, { y: '-100%', opacity: 0 }, { y: '0%', opacity: 1, duration: 0.4, ease: 'power2.out', onComplete: done })
+}
+const onMenuLeave = (el, done) => {
+  gsap.to(el, { y: '-100%', opacity: 0, duration: 0.3, ease: 'power2.in', onComplete: done })
+}
+const onKey = (e) => {
+  if (e.key === 'Escape') showMobileMenu.value = false
+}
 
-watch(() => route.fullPath, () => {
-  menuOpen.value = false
-})
-watch(menuOpen, (open) => {
-  document.body.style.overflow = open ? 'hidden' : ''
-})
+watch(() => route.fullPath, () => (showMobileMenu.value = false))
 
 onMounted(() => {
   initTheme()
@@ -49,213 +52,78 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
   window.removeEventListener('keydown', onKey)
-  document.body.style.overflow = ''
 })
 </script>
 
 <template>
-  <header class="app-header" :class="{ 'is-scrolled': scrolled }">
-    <div class="wrap header-row">
-      <RouterLink to="/" class="brand" aria-label="Prompt Engine home">
-        <BrandMark :size="28" />
-        <span class="brand-name">Prompt Engine</span>
+  <nav class="navbar" :class="{ scrolled }" aria-label="Main">
+    <div class="navbar-content">
+      <RouterLink to="/" class="navbar-brand">
+        <img :src="logo" alt="Prompt-Engine Logo" class="logo-icon" />
+        <span class="brand-name">Prompt-Engine</span>
       </RouterLink>
 
-      <nav class="desktop-nav" aria-label="Main">
-        <RouterLink v-for="link in links" :key="link.to" :to="link.to" class="nav-link">
-          {{ link.label }}
+      <div class="navbar-links hidden md:flex">
+        <RouterLink v-for="l in links" :key="l.to" :to="l.to" class="nav-link" exact-active-class="is-current">
+          {{ l.label }}
         </RouterLink>
-      </nav>
+      </div>
 
-      <div class="header-actions">
-        <button
-          type="button"
-          class="icon-btn"
-          :aria-label="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'"
-          @click="toggleTheme"
-        >
-          <svg v-if="isDarkMode" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-          </svg>
-          <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      <div class="navbar-actions-wrapper flex items-center justify-end flex-1">
+        <div class="navbar-actions hidden md:flex">
+          <button type="button" class="theme-toggle" :aria-label="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'" @click="toggleTheme">
+            <svg v-if="!isDarkMode" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" />
+            </svg>
+            <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <button v-if="authStore.isAuthenticated" type="button" class="navbar-cta" @click="handleLogout">Logout</button>
+          <RouterLink v-else to="/login" class="navbar-cta">Login</RouterLink>
+        </div>
+      </div>
+
+      <button type="button" class="menu-toggle md:hidden" :aria-expanded="showMobileMenu" aria-label="Toggle menu" @click="showMobileMenu = !showMobileMenu">
+        <svg v-if="!showMobileMenu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <Transition @enter="onMenuEnter" @leave="onMenuLeave">
+    <div v-if="showMobileMenu" class="mobile-menu md:hidden fixed inset-0 z-[1000000] flex flex-col">
+      <div class="mobile-menu-header p-4 border-b border-card-border flex items-center justify-between">
+        <div class="navbar-brand">
+          <img :src="logo" alt="Prompt-Engine Logo" class="logo-icon" />
+          <span class="brand-name">Prompt-Engine</span>
+        </div>
+        <button type="button" class="p-2" aria-label="Close menu" @click="showMobileMenu = false">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-
-        <button v-if="authStore.isAuthenticated" type="button" class="btn btn-secondary hide-sm" @click="signOut">
-          Sign out
+      </div>
+      <div class="mobile-menu-links">
+        <RouterLink v-for="l in links" :key="l.to" :to="l.to" class="mobile-nav-link">{{ l.label }}</RouterLink>
+      </div>
+      <div class="mobile-menu-actions">
+        <button type="button" class="mobile-theme-toggle" @click="toggleTheme">
+          <span class="mr-2">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
         </button>
-        <RouterLink v-else to="/login" class="btn btn-primary hide-sm">Sign in</RouterLink>
-
-        <button
-          type="button"
-          class="icon-btn menu-btn"
-          :aria-expanded="menuOpen"
-          aria-controls="mobile-menu"
-          :aria-label="menuOpen ? 'Close menu' : 'Open menu'"
-          @click="menuOpen = !menuOpen"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <path v-if="menuOpen" d="M6 6l12 12M18 6L6 18" />
-            <path v-else d="M4 7h16M4 12h16M4 17h10" />
-          </svg>
-        </button>
+        <button v-if="authStore.isAuthenticated" type="button" class="mobile-cta" @click="handleLogout">Logout</button>
+        <RouterLink v-else to="/login" class="mobile-cta">Login</RouterLink>
       </div>
     </div>
-
-    <Transition name="sheet">
-      <div v-if="menuOpen" id="mobile-menu" class="mobile-menu">
-        <nav class="wrap mobile-nav" aria-label="Mobile">
-          <RouterLink to="/" class="mobile-link">Home</RouterLink>
-          <RouterLink v-for="link in links" :key="link.to" :to="link.to" class="mobile-link">
-            {{ link.label }}
-          </RouterLink>
-          <div class="mobile-actions">
-            <button v-if="authStore.isAuthenticated" type="button" class="btn btn-secondary" @click="signOut">Sign out</button>
-            <RouterLink v-else to="/login" class="btn btn-primary">Sign in</RouterLink>
-          </div>
-        </nav>
-      </div>
-    </Transition>
-  </header>
+  </Transition>
 </template>
 
 <style scoped>
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background-color: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: saturate(1.4) blur(10px);
-  border-bottom: 1px solid transparent;
-  transition: border-color 200ms;
-}
-.app-header.is-scrolled {
-  border-bottom-color: var(--rule);
-}
-.header-row {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  height: 4rem;
-}
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  text-decoration: none;
-  color: var(--ink);
-}
-.brand-name {
-  font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: -0.02em;
-}
-.desktop-nav {
-  display: none;
-  gap: 0.25rem;
-  margin-left: 1rem;
-}
-.nav-link {
-  position: relative;
-  padding: 0.5rem 0.75rem;
-  color: var(--ink-muted);
-  font-weight: 500;
-  text-decoration: none;
-  border-radius: var(--radius-control);
-}
-.nav-link:hover {
-  color: var(--ink);
-}
-.nav-link.router-link-active {
-  color: var(--ink);
-}
-.nav-link.router-link-active::after {
-  content: '';
-  position: absolute;
-  left: 0.75rem;
-  right: 0.75rem;
-  bottom: 0.2rem;
-  height: 2px;
-  background: var(--pencil);
-  border-radius: 2px;
-}
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-.icon-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--radius-control);
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-.icon-btn:hover {
-  background-color: var(--sheet-tint);
-}
-.hide-sm {
-  display: none;
-}
-.mobile-menu {
-  position: fixed;
-  inset: 4rem 0 0 0;
-  background-color: var(--paper);
-  border-top: 1px solid var(--rule);
-  overflow-y: auto;
-}
-.mobile-nav {
-  display: flex;
-  flex-direction: column;
-  padding-top: 1rem;
-  padding-bottom: 2rem;
-}
-.mobile-link {
-  padding: 0.9rem 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  text-decoration: none;
-  border-bottom: 1px solid var(--rule);
-}
-.mobile-link.router-link-exact-active {
-  color: var(--pencil);
-}
-.mobile-actions {
-  display: flex;
-  margin-top: 1.5rem;
-}
-.mobile-actions .btn {
-  flex: 1;
-}
-.sheet-enter-active,
-.sheet-leave-active {
-  transition: opacity 180ms ease, transform 180ms ease;
-}
-.sheet-enter-from,
-.sheet-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
-}
-
-@media (min-width: 768px) {
-  .desktop-nav {
-    display: flex;
-  }
-  .hide-sm {
-    display: inline-flex;
-  }
-  .menu-btn,
-  .mobile-menu {
-    display: none;
-  }
+.nav-link.is-current {
+  color: var(--color-primary) !important;
 }
 </style>

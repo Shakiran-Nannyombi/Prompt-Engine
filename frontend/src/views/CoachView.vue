@@ -1,28 +1,15 @@
 <template>
-  <div class="coach-view h-screen flex flex-col bg-background">
-    <!-- Navigation Header -->
-    <!-- Navigation Header removed in favor of sidebar -->
-
-    <!-- Main Chat Interface -->
-    <div class="flex-1 overflow-hidden">
-      <CoachChatInterface
-        :messages="messages"
-        :isLoading="isLoading"
-        :loadingMessage="loadingMessage"
-        :showStopButton="showStopButton"
-        :error="error"
-        :progressInfo="progressInfo"
-        @send-message="handleSendMessage"
-        @stop-generation="handleStopGeneration"
-        @clear-error="clearError"
-        @reset-conversation="handleResetConversation"
-        @download-prompt="handleDownloadPrompt"
-        @load-thread="handleLoadThread"
-        @create-thread="handleCreateThread"
-        @start-session="startNewConversation"
-      />
-    </div>
-  </div>
+  <CoachChatInterface
+    :messages="messages"
+    :isLoading="isLoading"
+    :loadingMessage="loadingMessage"
+    :error="error"
+    :progressInfo="progressInfo"
+    @send-message="handleSendMessage"
+    @clear-error="clearError"
+    @reset-conversation="handleResetConversation"
+    @download-prompt="handleDownloadPrompt"
+  />
 </template>
 
 <script setup>
@@ -146,8 +133,6 @@ const handleResetConversation = async () => {
   // Create new thread
   await createNewThread()
   
-  // Start new conversation
-  startNewConversation()
 }
 
 const handleDownloadPrompt = (prompt) => {
@@ -328,39 +313,3 @@ onMounted(async () => {
   // Manual start only
 })
 </script>
-
-<style scoped>
-.coach-view {
-  min-height: 0;
-}
-
-.nav-header {
-  flex-shrink: 0;
-}
-
-/* Theme-aware styling */
-.coach-view {
-  background-color: var(--color-background);
-  color: var(--color-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.nav-header {
-  background-color: var(--color-card-bg);
-  border-color: var(--color-card-border);
-  color: var(--color-text);
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .nav-header {
-    padding: 1rem;
-  }
-  
-  .nav-header .flex {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-}
-</style>

@@ -19,19 +19,23 @@ import AppFooter from './AppFooter.vue'
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--color-background);
 }
 main {
   flex: 1;
+  /* clear the floating navbar */
+  padding-top: 7rem;
+  padding-bottom: 6rem;
 }
 .skip-link {
   position: absolute;
   left: 1rem;
   top: -3rem;
-  z-index: 100;
+  z-index: 100001;
   padding: 0.5rem 0.9rem;
-  background: var(--ink);
-  color: var(--paper);
-  border-radius: var(--radius-control);
+  background: var(--color-text);
+  color: var(--color-background);
+  border-radius: 0.75rem;
   text-decoration: none;
 }
 .skip-link:focus {

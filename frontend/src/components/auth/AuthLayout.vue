@@ -1,45 +1,34 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-import BrandMark from '@/components/layout/BrandMark.vue'
-import Manuscript from '@/components/manuscript/Manuscript.vue'
+import logo from '@/assets/images/logo.svg'
 
 defineProps({
   title: { type: String, required: true },
   subtitle: { type: String, default: '' },
+  image: { type: String, default: '/login_bg_branded.png' },
 })
-
-const sample = [
-  { type: 'add', text: 'As a recruiter, ', note: 'A role sets the voice.' },
-  { type: 'keep', text: 'write a job ad for a ' },
-  { type: 'cut', text: 'developer. ' },
-  { type: 'add', text: 'junior Vue developer in Kampala, under 150 words, with the salary range first.', note: 'Specifics replace guesswork.' },
-]
 </script>
 
 <template>
   <div class="auth">
-    <aside class="auth-side" aria-hidden="true">
-      <RouterLink to="/" class="auth-brand" tabindex="-1">
-        <BrandMark :size="28" />
-        <span>Prompt Engine</span>
-      </RouterLink>
-      <div class="auth-side-body">
-        <p class="auth-side-line">Every prompt gets a second draft.</p>
-        <Manuscript :segments="sample" label="Example" />
-      </div>
-    </aside>
+    <aside class="auth-art" :style="{ backgroundImage: `url(${image})` }" aria-hidden="true"></aside>
 
     <main class="auth-main">
-      <div class="auth-panel">
-        <RouterLink to="/" class="auth-brand auth-brand-sm" aria-label="Prompt Engine home">
-          <BrandMark :size="26" />
-          <span>Prompt Engine</span>
+      <div class="auth-panel card">
+        <RouterLink to="/" class="auth-brand" aria-label="Prompt-Engine home">
+          <img :src="logo" alt="" class="auth-logo" />
+          <span>Prompt-Engine</span>
         </RouterLink>
         <h1 class="auth-title">{{ title }}</h1>
         <p v-if="subtitle" class="auth-subtitle">{{ subtitle }}</p>
         <slot />
-        <RouterLink to="/" class="auth-back">Back to home</RouterLink>
       </div>
+      <RouterLink to="/" class="auth-back">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Home
+      </RouterLink>
     </main>
   </div>
 </template>
@@ -48,77 +37,73 @@ const sample = [
 .auth {
   min-height: 100vh;
   display: grid;
+  background: var(--color-background);
 }
-.auth-side {
+.auth-art {
   display: none;
+  background-size: cover;
+  background-position: center;
+}
+.auth-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 2.5rem 1.25rem;
+}
+.auth-panel {
+  width: 100%;
+  max-width: 26rem;
+  padding: 2rem 1.75rem;
 }
 .auth-brand {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--ink);
+  margin-bottom: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
   text-decoration: none;
 }
-.auth-main {
-  display: grid;
-  place-items: center;
-  padding: 2.5rem 1.25rem;
-}
-.auth-panel {
-  width: 100%;
-  max-width: 24rem;
-}
-.auth-brand-sm {
-  margin-bottom: 2.5rem;
+.auth-logo {
+  width: 30px;
+  height: 30px;
 }
 .auth-title {
-  font-size: 2.1rem;
-  font-weight: 750;
-  letter-spacing: -0.04em;
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
 }
 .auth-subtitle {
-  margin-top: 0.5rem;
-  color: var(--ink-muted);
+  margin-top: 0.4rem;
+  color: var(--color-text-muted);
 }
 .auth-back {
-  display: inline-block;
-  margin-top: 2rem;
-  font-size: 0.925rem;
-  color: var(--ink-muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  text-decoration: none;
+  border: 1px solid var(--color-card-border);
+  border-radius: 2rem;
+  background: var(--color-card-bg);
 }
 .auth-back:hover {
-  color: var(--ink);
+  background: var(--color-secondary);
 }
 
 @media (min-width: 960px) {
   .auth {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
-  .auth-side {
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 3rem 3rem;
-    background: var(--sheet-tint);
-    border-right: 1px solid var(--rule);
-  }
-  .auth-side-body {
-    margin: auto 0;
-    max-width: 34rem;
-  }
-  .auth-side-line {
-    font-size: clamp(1.9rem, 1rem + 2vw, 2.6rem);
-    font-weight: 750;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-    margin-bottom: 2rem;
-    max-width: 14ch;
-  }
-  .auth-brand-sm {
-    display: none;
+  .auth-art {
+    display: block;
   }
 }
 </style>

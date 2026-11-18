@@ -1,145 +1,140 @@
 @import './base.css';
 @import 'tailwindcss';
+@import './site-chrome.css';
 
 /* Dark mode follows the `dark` class on <html> (set by useTheme + index.html). */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
- * "Editor's desk" design tokens.
- * A prompt is treated as a manuscript under edit: ink on paper,
- * blue-pencil edits, highlighter marks and margin notes.
- */
+/* Prompt Engine brand palette (unchanged), plus a few variables the
+   stylesheets referenced but never defined. */
 :root {
-  --paper: #f4f6fb;
-  --sheet: #ffffff;
-  --sheet-tint: #eceff7;
-  --ink: #1b1f3b;
-  --ink-muted: #5b6178;
-  --pencil: #2f5bea;
-  --pencil-strong: #2449c4;
+  --color-primary: #f60968;
+  --color-primary-rgb: 246, 9, 104;
+  --color-primary-strong: #e0085a; /* AA-safe pink for small text and links */
+  --color-secondary: #f1f5f9;
+  --color-accent: #94a3b8;
+  --color-background: #ffffff;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+
+  --color-card-bg: #ffffff;
+  --color-card-border: #e2e8f0;
+  --color-input-bg: #f8fafc;
+  --color-input-border: #cbd5e1;
+
+  --color-success: #10b981;
+  --color-error: #ef4444;
+
+  --color-scrollbar-track: #f8fafc;
+  --color-scrollbar-thumb: #94a3b8;
+  --color-selection-bg: #fde6eb;
+  --color-selection-text: #800530;
+
+  --brand-gradient: linear-gradient(135deg, #e91e63, #9c27b0);
+  --brand-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+  --card-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.18);
+}
+
+.dark {
+  --color-primary: #f60968;
+  --color-primary-strong: #ff4d8d;
+  --color-secondary: #1e293b;
+  --color-accent: #334155;
+  --color-background: #020617;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+
+  --color-card-bg: #0f172a;
+  --color-card-border: #1e293b;
+  --color-input-bg: #020617;
+  --color-input-border: #334155;
+
+  --color-scrollbar-track: #020617;
+  --color-scrollbar-thumb: #334155;
+  --color-selection-bg: #4e2d5c;
+  --color-selection-text: #f1f5f9;
+
+  --card-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Short names used by the shared components; all point at the brand palette above. */
+:root,
+.dark {
+  --paper: var(--color-background);
+  --sheet: var(--color-card-bg);
+  --sheet-tint: var(--color-secondary);
+  --ink: var(--color-text);
+  --ink-muted: var(--color-text-muted);
+  --pencil: var(--color-primary-strong);
+  --pencil-strong: var(--color-primary);
   --on-pencil: #ffffff;
-  --highlight: #f5e663;
-  --rule: #d9dde8;
-  --danger: #c2334d;
-  --ok: #1f8a5b;
-  --lift: 0 1px 0 rgba(27, 31, 59, 0.04), 0 18px 40px -24px rgba(27, 31, 59, 0.35);
+  --rule: var(--color-card-border);
+  --danger: var(--color-error);
+  --ok: var(--color-success);
+  --lift: var(--card-shadow);
+  --radius-control: 0.75rem;
+  --radius-sheet: 1.5rem;
+  --font-serif: var(--font-sans);
 }
 
-.dark {
-  --paper: #12142a;
-  --sheet: #1b1e38;
-  --sheet-tint: #23274a;
-  --ink: #e8eaf4;
-  --ink-muted: #a3a8c3;
-  --pencil: #7f9cff;
-  --pencil-strong: #a3b8ff;
-  --on-pencil: #0f1230;
-  --highlight: #e9d85a;
-  --rule: #2c3054;
-  --danger: #ff7a90;
-  --ok: #5fd6a0;
-  --lift: 0 1px 0 rgba(0, 0, 0, 0.2), 0 24px 48px -24px rgba(0, 0, 0, 0.7);
-}
-
+/* Expose the palette to Tailwind utilities (bg-primary, text-text, border-card-border…). */
 @theme inline {
-  --font-sans: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: 'Source Serif 4', ui-serif, Georgia, serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --color-paper: var(--paper);
-  --color-sheet: var(--sheet);
-  --color-sheet-tint: var(--sheet-tint);
-  --color-ink: var(--ink);
-  --color-ink-muted: var(--ink-muted);
-  --color-pencil: var(--pencil);
-  --color-pencil-strong: var(--pencil-strong);
-  --color-on-pencil: var(--on-pencil);
-  --color-highlight: var(--highlight);
-  --color-rule: var(--rule);
-  --color-danger: var(--danger);
-  --color-ok: var(--ok);
-
-  /* Legacy names still used in older components; mapped onto the new tokens. */
-  --color-primary: var(--pencil);
-  --color-secondary: var(--sheet-tint);
-  --color-accent: var(--rule);
-  --color-background: var(--paper);
-  --color-text: var(--ink);
-  --color-card-bg: var(--sheet);
-  --color-card-border: var(--rule);
-  --color-input-bg: var(--sheet);
-  --color-input-border: var(--rule);
-  --color-success: var(--ok);
-  --color-error: var(--danger);
-
-  --radius-control: 6px;
-  --radius-sheet: 14px;
-  --shadow-lift: var(--lift);
-}
-
-html {
-  background-color: var(--paper);
-  color-scheme: light;
-}
-.dark {
-  color-scheme: dark;
+  --color-primary: var(--color-primary);
+  --color-primary-strong: var(--color-primary-strong);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-background: var(--color-background);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-card-bg: var(--color-card-bg);
+  --color-card-border: var(--color-card-border);
+  --color-input-bg: var(--color-input-bg);
+  --color-input-border: var(--color-input-border);
+  --color-success: var(--color-success);
+  --color-error: var(--color-error);
 }
 
 body {
   margin: 0;
-  min-height: 100vh;
-  background-color: var(--paper);
-  color: var(--ink);
+  background-color: var(--color-background);
+  color: var(--color-text);
   font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 200ms, color 200ms;
 }
 
-h1,
-h2,
-h3,
-h4 {
-  font-family: var(--font-sans);
-  color: var(--ink);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-p {
-  text-wrap: pretty;
-}
-
-a {
-  color: inherit;
+html {
+  scroll-behavior: smooth;
 }
 
 :focus-visible {
-  outline: 2px solid var(--pencil);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 ::selection {
-  background-color: var(--highlight);
-  color: #1b1f3b;
+  background-color: var(--color-selection-bg);
+  color: var(--color-selection-text);
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background-color: var(--color-scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--rule);
-  border-radius: 10px;
-  border: 2px solid var(--paper);
+  background-color: var(--color-scrollbar-thumb);
+  border-radius: 4px;
 }
 
-/* Shared building blocks */
+/* ---------- Shared building blocks, matching the Home page ---------- */
+
 .wrap {
   width: 100%;
   max-width: 72rem;
@@ -152,21 +147,22 @@ a {
   }
 }
 
+/* Pill buttons, same as the Home hero buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   min-height: 2.75rem;
-  padding: 0 1.15rem;
-  border-radius: var(--radius-control);
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
+  padding: 0 1.5rem;
+  border-radius: 2rem;
+  font-family: inherit;
+  font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background-color 150ms, border-color 150ms, color 150ms;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   white-space: nowrap;
 }
 .btn:disabled {
@@ -174,61 +170,108 @@ a {
   cursor: not-allowed;
 }
 .btn-primary {
-  background-color: var(--pencil);
-  color: var(--on-pencil);
+  background: var(--brand-gradient);
+  color: #ffffff;
+  box-shadow: var(--brand-shadow);
 }
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--pencil-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
 }
 .btn-secondary {
-  background-color: var(--sheet);
-  color: var(--ink);
-  border-color: var(--rule);
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  border-color: var(--color-card-border);
 }
 .btn-secondary:hover:not(:disabled) {
-  border-color: var(--ink-muted);
+  background: var(--color-secondary);
+  transform: translateY(-2px);
 }
 .btn-ghost {
-  background-color: transparent;
-  color: var(--ink);
+  background: transparent;
+  color: var(--color-text);
 }
 .btn-ghost:hover:not(:disabled) {
-  background-color: var(--sheet-tint);
+  background: var(--color-secondary);
 }
 
-.sheet {
-  background-color: var(--sheet);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-sheet);
+.card {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: 1.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+/* Small pill label, same as the Home "Features" / "How it works" badges */
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary-strong);
+  background: rgba(var(--color-primary-rgb), 0.08);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+  border-radius: 2rem;
+}
+
+/* Centred section header used across pages: pill badge, bold title, short lede */
+.page-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  max-width: 46rem;
+  margin: 0 auto 3rem;
+}
+.page-title {
+  font-size: clamp(2.2rem, 1.4rem + 3.4vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--color-text);
+}
+.section-title {
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+}
+.page-lede {
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+  max-width: 38rem;
+}
+
+.text-gradient {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .field {
   width: 100%;
-  min-height: 2.75rem;
-  padding: 0.6rem 0.8rem;
-  background-color: var(--sheet);
-  color: var(--ink);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-control);
+  min-height: 2.9rem;
+  padding: 0.65rem 0.9rem;
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-input-border);
+  border-radius: 0.75rem;
+  font: inherit;
   transition: border-color 150ms, box-shadow 150ms;
 }
 .field::placeholder {
-  color: var(--ink-muted);
-  opacity: 0.8;
+  color: var(--color-text-muted);
 }
 .field:focus {
   outline: none;
-  border-color: var(--pencil);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pencil) 22%, transparent);
-}
-
-/* Serif "manuscript" text: prompts, refined output, coach notes */
-.prose-manuscript {
-  font-family: var(--font-serif);
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  color: var(--ink);
-  max-width: 68ch;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15);
 }
 
 .loading-dots {

@@ -27,7 +27,7 @@ const handleLogin = async ({ email, password }) => {
 </script>
 
 <template>
-  <AuthLayout title="Sign in" subtitle="Pick up where you left off.">
+  <AuthLayout title="Welcome back" subtitle="Sign in to your account to continue.">
     <LoginForm :is-loading="isLoading" :error="error" @submit="handleLogin" />
   </AuthLayout>
 </template>
