@@ -1461,27 +1461,6 @@ body,
   }
 }
 
-@media (max-width: 768px) {
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    text-align: center;
-  }
-
-  .footer-column {
-    align-items: center;
-  }
-
-  .footer-links {
-    justify-content: center;
-  }
-
-  .newsletter-form {
-    width: 100%;
-    max-width: 400px;
-  }
-}
-
 #vanta-cta canvas {
   position: absolute !important;
   top: 0;

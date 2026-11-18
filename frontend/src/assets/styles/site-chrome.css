@@ -523,24 +523,55 @@
   margin: 0;
 }
 
-/* Responsive Design for CTA and Footer */
-@media (max-width: 768px) {
+/* Responsive footer: keep the desktop column layout, just scale it down */
+@media (max-width: 900px) {
+  .footer-section {
+    padding: 3rem 1.5rem 0;
+  }
+
   .footer-content {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    text-align: center;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Brand column spans the full width above the link columns */
+  .footer-content > .footer-column:first-child {
+    grid-column: 1 / -1;
   }
 
   .footer-column {
-    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-title {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-section {
+    padding: 2.5rem 1.25rem 0;
+  }
+
+  .footer-content {
+    gap: 1.75rem 1rem;
+  }
+
+  .footer-title {
+    font-size: 1rem;
+    margin-bottom: 0;
   }
 
   .footer-links {
-    justify-content: center;
+    gap: 0.6rem;
   }
 
-  .newsletter-form {
-    width: 100%;
-    max-width: 400px;
+  .footer-link {
+    font-size: 0.875rem;
+  }
+
+  .copyright {
+    font-size: 0.8rem;
   }
 }
